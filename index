@@ -67,7 +67,15 @@
 <body class="bg-gray-100 text-gray-800">
 
     <div class="container mx-auto p-4 md:p-8">
-        
+      
+        <!-- API Key 輸入區 -->
+        <div class="max-w-2xl mx-auto mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex flex-col md:flex-row items-center gap-3">
+            <span class="font-semibold text-yellow-800">Google Gemini API Key：</span>
+            <input type="password" id="api-key-input" class="flex-1 px-3 py-2 border border-gray-300 rounded-md text-base" placeholder="請貼上你的 Google AI API Key" />
+            <button id="save-api-key-btn" class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">儲存</button>
+            <span id="api-key-status" class="ml-2 text-green-600 text-sm hidden">已儲存!</span>
+        </div>
+
         <header class="text-center mb-8">
             <h1 class="text-3xl md:text-4xl font-bold text-gray-900">AI 競品分析與策略儀表板 (專家版)</h1>
             <p class="mt-2 text-gray-600">輸入您的品牌、策略目標與競品，AI 將提供全面性的策略分析與洞察。</p>
@@ -80,15 +88,15 @@
                 <div class="space-y-4">
                     <div>
                         <label for="my-brand-input" class="block text-sm font-medium text-gray-700 mb-1">您的品牌</label>
-                        <input type="text" id="my-brand-input" class="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="例如：Gogoro">
+                        <input type="text" id="my-brand-input" class="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="請輸入您的品牌名稱">
                     </div>
                     <div>
                         <label for="my-goal-input" class="block text-sm font-medium text-gray-700 mb-1">本季行銷目標</label>
-                        <textarea id="my-goal-input" rows="2" class="w-full px-4 py-2 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="例如：提升年輕族群好感度15%"></textarea>
+                        <textarea id="my-goal-input" rows="2" class="w-full px-4 py-2 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="請簡述本季的行銷目標"></textarea>
                     </div>
                      <div>
                         <label for="my-persona-input" class="block text-sm font-medium text-gray-700 mb-1">目標受眾輪廓 (Persona)</label>
-                        <textarea id="my-persona-input" rows="3" class="w-full px-4 py-2 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="例如：25-35歲，注重生活品質與環保議題的都市上班族..."></textarea>
+                        <textarea id="my-persona-input" rows="3" class="w-full px-4 py-2 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="請簡述目標受眾的特徵、痛點等"></textarea>
                     </div>
                 </div>
                 <!-- Competitors -->
@@ -97,16 +105,14 @@
                     <div id="competitor-list" class="space-y-3">
                         <!-- Competitor inputs will be added here -->
                     </div>
-                    <button id="add-competitor-btn" class="mt-3 w-full text-indigo-600 border-2 border-dashed border-indigo-300 hover:border-indigo-500 hover:bg-indigo-50 font-semibold py-2 px-4 rounded-lg transition">
-                        + 新增競品
-                    </button>
+                    <button id="add-competitor-btn" class="mt-3 w-full text-indigo-600 border-2 border-dashed border-indigo-300 hover:border-indigo-500 hover:bg-indigo-50 font-semibold py-2 px-4 rounded-lg transition">+ 新增競品</button>
                 </div>
             </div>
             <!-- Analyze Button -->
             <div class="mt-6">
-                <button id="analyze-btn" class="w-full bg-indigo-600 text-white font-bold px-8 py-4 text-lg rounded-lg hover:bg-indigo-700 transition-transform transform hover:scale-101 focus:outline-none focus:ring-4 focus:ring-indigo-300">
+                <button id="analyze-btn" class="w-full bg-indigo-600 text-white font-bold px-8 py-4 text-lg rounded-lg hover:bg-indigo-700 transition-transform transform hover:scale-101 focus:outline-none">
                     <span class="flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6m-4 0h4"></path></svg>
                         開始深度分析
                     </span>
                 </button>
@@ -114,8 +120,8 @@
         </div>
 
         <div id="loader" class="text-center py-10 hidden">
-             <div role="status" class="flex justify-center items-center flex-col">
-                <svg aria-hidden="true" class="w-12 h-12 mb-4 text-gray-200 animate-spin dark:text-gray-600 fill-indigo-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0492C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg>
+            <div role="status" class="flex justify-center items-center flex-col">
+                <svg aria-hidden="true" class="w-12 h-12 mb-4 text-gray-200 animate-spin dark:text-gray-600 fill-indigo-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08157 50.5908C9.08157 73.1865 27.4043 91.5092 50 91.5092C72.5957 91.5092 90.9184 73.1865 90.9184 50.5908C90.9184 27.9951 72.5957 9.67236 50 9.67236C27.4043 9.67236 9.08157 27.9951 9.08157 50.5908Z"></path><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5536C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7235 75.2124 7.41289C69.5422 4.10237 63.2754 1.94025 56.7698 1.05124C51.7666 0.367006 46.6976 0.446843 41.7345 1.27873C39.2619 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0502 10.1071C47.8511 9.5209 51.7191 9.46681 55.5402 10.0491C60.864 10.8615 65.9921 12.7486 70.6331 15.6292C75.274 18.5098 79.3347 22.3136 82.5849 26.8236C84.9175 29.9116 86.7999 33.3717 88.1578 37.0513C89.083 39.4074 91.5422 40.6781 93.9676 39.0409Z"></path></svg>
                 <p class="text-lg text-gray-600 font-semibold">AI 正在進行深度比較分析，請稍候...</p>
                 <p class="text-sm text-gray-500 mt-1">這可能需要 90-180 秒</p>
             </div>
@@ -129,7 +135,7 @@
                 <h2 class="text-3xl font-bold text-gray-800">分析結果</h2>
                 <button id="download-btn" class="bg-green-600 text-white font-bold px-6 py-2 rounded-lg hover:bg-green-700 transition focus:outline-none focus:ring-4 focus:ring-green-300">
                     <span class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm6-14a1 1 0 00-1 1v8.586l-2.293-2.293a1 1 0 00-1.414 1.414l4 4a1 1 0 001.414 0l4-4a1 1 0 00-1.414-1.414L11 12.586V4a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
                         下載 PDF 報告
                     </span>
                 </button>
@@ -167,7 +173,7 @@
                 <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
                     <h2 class="text-2xl font-bold mb-4 text-gray-800">
                         <span class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01"></path></svg>
                             AI 策略分析與洞察
                         </span>
                     </h2>
@@ -194,7 +200,22 @@
         const summaryContainer = document.getElementById('ai-summary');
         const downloadBtn = document.getElementById('download-btn');
 
+        const apiKeyInput = document.getElementById('api-key-input');
+        const saveApiKeyBtn = document.getElementById('save-api-key-btn');
+        const apiKeyStatus = document.getElementById('api-key-status');
+
         let socialBuzzChart = null;
+
+        // 初始化 API Key
+        apiKeyInput.value = localStorage.getItem('gemini_api_key') || '';
+        saveApiKeyBtn.addEventListener('click', () => {
+            const key = apiKeyInput.value.trim();
+            if (key) {
+                localStorage.setItem('gemini_api_key', key);
+                apiKeyStatus.classList.remove('hidden');
+                setTimeout(() => apiKeyStatus.classList.add('hidden'), 2000);
+            }
+        });
 
         addCompetitorBtn.addEventListener('click', addCompetitorField);
         analyzeBtn.addEventListener('click', handleAnalysis);
@@ -213,7 +234,7 @@
                     <option value="potential">潛在競品</option>
                 </select>
                 <button type="button" class="text-gray-400 hover:text-red-500" onclick="this.parentElement.remove()">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L10 11.414l2.707-2.707a1 1 0 00-1.414-1.414L10 9.586 8.707 7.293z" clip-rule="evenodd"/></svg>
                 </button>
             `;
             competitorList.appendChild(newField);
@@ -271,73 +292,72 @@
 
             // **MODIFIED PROMPT**
             const prompt = `
-            作為一名頂尖的市場策略顧問，請對品牌「${myBrand.name}」(我方品牌) 與其競爭對手 ${competitorsString} 進行深度、全面的比較分析，並基於你的廣泛知識與公開資訊來完成任務。
-            我方品牌的本季行銷目標是：「${myBrand.goal || '未提供'}」。
-            我方品牌的目標受眾是：「${myBrand.persona || '未提供'}」。
+作為一名頂尖的市場策略顧問，請對品牌「${myBrand.name}」(我方品牌) 與其競爭對手 ${competitorsString} 進行深度、全面的比較分析，並基於你的廣泛資料與產業知識，彙整最新公開資訊（如媒體、社群、官網等）。我方品牌的本季行銷目標是：「${myBrand.goal || '未提供'}」。目標受眾：「${myBrand.persona || '未提供'}」。
 
-            請遵循以下指示來生成你的分析報告：
-            1.  **資訊搜集**: 請綜合利用你對這些品牌的知識，以及網路上的公開資訊（如媒體報導、社群趨勢、官方消息等）來進行分析。
-            2.  **內容生成**: 根據搜集到的資訊，完成下方的 JSON 物件。如果某些特定欄位的資訊較少或難以從公開管道確認，請根據你的產業知識做出合理的分析，並可在文字中註明'根據市場普遍認知'或類似的字眼。我們追求的是資訊的豐富性與洞察力。
-            3.  **格式要求**: 絕對不要在任何文字輸出中使用雙引號 " 字符，並嚴格遵循 JSON 格式。
-
-            請生成一個嚴格遵循以下結構的 JSON 物件：
-            {
-                "analysisResults": [
-                    {
-                        "brandName": "...",
-                        "competitorType": "...",
-                        "analysis": {
-                            "productPositioning": "...",
-                            "userNeeds": "...",
-                            "featureComparison": "...",
-                            "uiUxDesign": "...",
-                            "copywritingStyle": "...",
-                            "visualStyle": "...",
-                            "revenueModel": "...",
-                            "marketingStrategy": "...",
-                            "userOps": "..."
-                        }
-                    }
-                ],
-                "socialBuzzTrend": {
-                    "labels": ["..."],
-                    "datasets": [
-                        {
-                            "label": "...",
-                            "data": [...]
-                        }
-                    ]
-                },
-                "combinedTimeline": [
-                    {
-                        "brandName": "...",
-                        "competitorType": "...",
-                        "date": "YYYY-MM-DD",
-                        "title": "...",
-                        "description": "...",
-                        "category": "...",
-                        "isPredicted": false
-                    }
-                ],
-                "alerts": [
-                    {
-                        "type": "opportunity" or "threat",
-                        "text": "..."
-                    }
-                ],
-                "aiStrategicAnalysis": "..."
+請嚴格依下方 JSON 結構填寫分析，每一項必填。如無資料請根據產業經驗合理推估。嚴禁在任何輸出中使用雙引號 " 字符，僅允許單引號。JSON 結構如下：
+{
+    'analysisResults': [
+        {
+            'brandName': '...',
+            'competitorType': '...',
+            'analysis': {
+                'productPositioning': '...',
+                'userNeeds': '...',
+                'featureComparison': '...',
+                'uiUxDesign': '...',
+                'copywritingStyle': '...',
+                'visualStyle': '...',
+                'revenueModel': '...',
+                'marketingStrategy': '...',
+                'userOps': '...'
             }
-            `;
-            
+        }
+    ],
+    'socialBuzzTrend': {
+        'labels': ['...'],
+        'datasets': [
+            {
+                'label': '...',
+                'data': [...]
+            }
+        ]
+    },
+    'combinedTimeline': [
+        {
+            'brandName': '...',
+            'competitorType': '...',
+            'date': 'YYYY-MM-DD',
+            'title': '...',
+            'description': '...',
+            'category': '...',
+            'isPredicted': false
+        }
+    ],
+    'alerts': [
+        {
+            'type': 'opportunity' or 'threat',
+            'text': '...'
+        }
+    ],
+    'aiStrategicAnalysis': '...'
+}
+`;
+
             const payload = {
                 contents: [{ role: "user", parts: [{ text: prompt }] }],
                 generationConfig: {
                     responseMimeType: "application/json",
                 }
             };
-            
-            const apiKey = ""; // Canvas 環境會提供
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            // 取得 API Key
+            const apiKey = localStorage.getItem('gemini_api_key') || '';
+            if (!apiKey) {
+                throw new Error('請先輸入並儲存 Google Gemini API Key');
+            }
+
+            // 使用 Gemini 2.5 Pro (API名稱為 gemini-1.5-pro)
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`;
 
             const response = await fetch(apiUrl, {
                 method: 'POST',
@@ -353,7 +373,8 @@
             const result = await response.json();
             
             if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts[0].text) {
-                const jsonString = result.candidates[0].content.parts[0].text;
+                // 將單引號換成雙引號以利 JSON.parse
+                const jsonString = result.candidates[0].content.parts[0].text.replace(/'/g, '"');
                 try {
                     return JSON.parse(jsonString);
                 } catch (e) {
@@ -571,8 +592,8 @@
                 const borderColor = isOpportunity ? 'border-green-500' : 'border-red-500';
                 const iconColor = isOpportunity ? 'text-green-500' : 'text-red-500';
                 const iconSvg = isOpportunity 
-                    ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>`
-                    : `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`;
+                    ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2l4-4"></path></svg>`
+                    : `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
                 
                 const alertEl = document.createElement('div');
                 alertEl.className = `flex items-start p-4 rounded-lg border-l-4 ${bgColor} ${borderColor}`;
