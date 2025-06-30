@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 競品分析與策略儀表板 (專家版)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <!-- Add jsPDF and html2canvas for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .table-sticky-header th {
+            position: sticky;
+            top: 0;
+            background-color: #f9fafb; /* bg-gray-50 */
+            z-index: 10;
+        }
+        .competitor-card {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+        }
+        /* Timeline Styles */
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -31px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: white;
+            border-width: 4px;
+        }
+        .timeline-item-my_brand::before { border-color: #4f46e5; }
+        .timeline-item-direct::before { border-color: #db2777; }
+        .timeline-item-indirect::before { border-color: #f59e0b; }
+        .timeline-item-potential::before { border-color: #10b981; }
+
+        .timeline-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: -22px;
+            top: 25px;
+            width: 2px;
+            height: calc(100% + 1.5rem); /* 1.5rem is the gap */
+            background-color: #e0e0e0;
+        }
+        .predicted-event {
+            border-style: dashed !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">AI 競品分析與策略儀表板 (專家版)</h1>
+            <p class="mt-2 text-gray-600">輸入您的品牌、策略目標與競品，AI 將提供全面性的策略分析與洞察。</p>
+        </header>
+
+        <div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-lg mb-8">
+            <!-- Inputs Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                <!-- My Brand & Goals -->
+                <div class="space-y-4">
+                    <div>
+                        <label for="my-brand-input" class="block text-sm font-medium text-gray-700 mb-1">您的品牌</label>
+                        <input type="text" id="my-brand-input" class="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="例如：Gogoro">
+                    </div>
+                    <div>
+                        <label for="my-goal-input" class="block text-sm font-medium text-gray-700 mb-1">本季行銷目標</label>
+                        <textarea id="my-goal-input" rows="2" class="w-full px-4 py-2 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="例如：提升年輕族群好感度15%"></textarea>
+                    </div>
+                     <div>
+                        <label for="my-persona-input" class="block text-sm font-medium text-gray-700 mb-1">目標受眾輪廓 (Persona)</label>
+                        <textarea id="my-persona-input" rows="3" class="w-full px-4 py-2 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="例如：25-35歲，注重生活品質與環保議題的都市上班族..."></textarea>
+                    </div>
+                </div>
+                <!-- Competitors -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">競爭對手</label>
+                    <div id="competitor-list" class="space-y-3">
+                        <!-- Competitor inputs will be added here -->
+                    </div>
+                    <button id="add-competitor-btn" class="mt-3 w-full text-indigo-600 border-2 border-dashed border-indigo-300 hover:border-indigo-500 hover:bg-indigo-50 font-semibold py-2 px-4 rounded-lg transition">
+                        + 新增競品
+                    </button>
+                </div>
+            </div>
+            <!-- Analyze Button -->
+            <div class="mt-6">
+                <button id="analyze-btn" class="w-full bg-indigo-600 text-white font-bold px-8 py-4 text-lg rounded-lg hover:bg-indigo-700 transition-transform transform hover:scale-101 focus:outline-none focus:ring-4 focus:ring-indigo-300">
+                    <span class="flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+                        開始深度分析
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <div id="loader" class="text-center py-10 hidden">
+             <div role="status" class="flex justify-center items-center flex-col">
+                <svg aria-hidden="true" class="w-12 h-12 mb-4 text-gray-200 animate-spin dark:text-gray-600 fill-indigo-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0492C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg>
+                <p class="text-lg text-gray-600 font-semibold">AI 正在進行深度比較分析，請稍候...</p>
+                <p class="text-sm text-gray-500 mt-1">這可能需要 90-180 秒</p>
+            </div>
+        </div>
+
+        <div id="error-message" class="text-center p-4 bg-red-100 text-red-700 rounded-lg hidden"></div>
+
+        <div id="results-container" class="hidden space-y-8">
+            <!-- Results Header with Download Button -->
+            <div class="flex justify-between items-center mb-0">
+                <h2 class="text-3xl font-bold text-gray-800">分析結果</h2>
+                <button id="download-btn" class="bg-green-600 text-white font-bold px-6 py-2 rounded-lg hover:bg-green-700 transition focus:outline-none focus:ring-4 focus:ring-green-300">
+                    <span class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                        下載 PDF 報告
+                    </span>
+                </button>
+            </div>
+
+            <!-- Content to be downloaded -->
+            <div id="downloadable-content" class="space-y-8">
+                <!-- Social Buzz Trend -->
+                <div class="bg-white rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 p-6">社群聲量趨勢圖</h2>
+                    <div class="p-6 pt-0">
+                        <canvas id="social-buzz-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Comparison Matrix -->
+                <div class="bg-white rounded-xl shadow-lg overflow-x-auto">
+                    <h2 class="text-2xl font-bold text-gray-800 p-6">競品比較矩陣</h2>
+                    <table id="comparison-table" class="min-w-full text-sm text-left"></table>
+                </div>
+
+                <!-- Marketing Timeline -->
+                <div class="bg-white rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 p-6">整合行銷活動時間軸</h2>
+                    <div id="timeline-container" class="relative border-l-2 border-gray-200 ml-8 p-6 pt-0"></div>
+                </div>
+                
+                <!-- Alerts -->
+                <div class="bg-white rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 p-6">機會與威脅警報</h2>
+                    <div id="alerts-container" class="px-6 pb-6 space-y-4"></div>
+                </div>
+
+                <!-- AI Strategic Analysis -->
+                <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-800">
+                        <span class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                            AI 策略分析與洞察
+                        </span>
+                    </h2>
+                    <div id="ai-summary" class="text-gray-700 leading-relaxed prose prose-lg max-w-none"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        const myBrandInput = document.getElementById('my-brand-input');
+        const myGoalInput = document.getElementById('my-goal-input');
+        const myPersonaInput = document.getElementById('my-persona-input');
+        const competitorList = document.getElementById('competitor-list');
+        const addCompetitorBtn = document.getElementById('add-competitor-btn');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const loader = document.getElementById('loader');
+        const resultsContainer = document.getElementById('results-container');
+        const errorMessage = document.getElementById('error-message');
+        const socialBuzzChartCanvas = document.getElementById('social-buzz-chart');
+        const comparisonTable = document.getElementById('comparison-table');
+        const timelineContainer = document.getElementById('timeline-container');
+        const alertsContainer = document.getElementById('alerts-container');
+        const summaryContainer = document.getElementById('ai-summary');
+        const downloadBtn = document.getElementById('download-btn');
+
+        let socialBuzzChart = null;
+
+        addCompetitorBtn.addEventListener('click', addCompetitorField);
+        analyzeBtn.addEventListener('click', handleAnalysis);
+        downloadBtn.addEventListener('click', downloadReport);
+
+        addCompetitorField();
+
+        function addCompetitorField() {
+            const newField = document.createElement('div');
+            newField.className = 'competitor-card';
+            newField.innerHTML = `
+                <input type="text" class="flex-grow w-full px-3 py-2 text-base border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="競品名稱">
+                <select class="px-3 py-2 text-base border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                    <option value="direct">直接競品</option>
+                    <option value="indirect">間接競品</option>
+                    <option value="potential">潛在競品</option>
+                </select>
+                <button type="button" class="text-gray-400 hover:text-red-500" onclick="this.parentElement.remove()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>
+                </button>
+            `;
+            competitorList.appendChild(newField);
+        }
+
+        async function handleAnalysis() {
+            const myBrand = {
+                name: myBrandInput.value.trim(),
+                goal: myGoalInput.value.trim(),
+                persona: myPersonaInput.value.trim(),
+            };
+            const competitors = Array.from(competitorList.children).map(div => ({
+                name: div.querySelector('input').value.trim(),
+                type: div.querySelector('select').value
+            })).filter(c => c.name);
+
+            if (!myBrand.name || competitors.length === 0) {
+                showError('請輸入您的品牌，並至少新增一個有效的競品。');
+                return;
+            }
+
+            resultsContainer.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+            loader.classList.remove('hidden');
+            analyzeBtn.disabled = true;
+            analyzeBtn.classList.add('cursor-not-allowed', 'opacity-70');
+
+            try {
+                const analysisData = await fetchAndAnalyzeData(myBrand, competitors);
+                if (!analysisData || !analysisData.analysisResults || !analysisData.aiStrategicAnalysis || !analysisData.combinedTimeline || !analysisData.socialBuzzTrend || !analysisData.alerts) {
+                    throw new Error('AI 回應資料結構不完整，無法進行分析。');
+                }
+                
+                renderResults(analysisData);
+                resultsContainer.classList.remove('hidden');
+
+            } catch (error) {
+                console.error('分析過程中發生錯誤:', error);
+                showError(`分析失敗：${error.message}`);
+            } finally {
+                loader.classList.add('hidden');
+                analyzeBtn.disabled = false;
+                analyzeBtn.classList.remove('cursor-not-allowed', 'opacity-70');
+            }
+        }
+
+        async function fetchAndAnalyzeData(myBrand, competitors) {
+            const competitorsString = competitors.map(c => `「${c.name}」(${c.type}競品)`).join('、');
+            const today = new Date();
+            const oneYearAgo = new Date();
+            oneYearAgo.setFullYear(today.getFullYear() - 1);
+            const formatDate = (date) => date.toISOString().split('T')[0];
+            const todayStr = formatDate(today);
+            const oneYearAgoStr = formatDate(oneYearAgo);
+
+            // **MODIFIED PROMPT**
+            const prompt = `
+            作為一名頂尖的市場策略顧問，請對品牌「${myBrand.name}」(我方品牌) 與其競爭對手 ${competitorsString} 進行深度、全面的比較分析，並基於你的廣泛知識與公開資訊來完成任務。
+            我方品牌的本季行銷目標是：「${myBrand.goal || '未提供'}」。
+            我方品牌的目標受眾是：「${myBrand.persona || '未提供'}」。
+
+            請遵循以下指示來生成你的分析報告：
+            1.  **資訊搜集**: 請綜合利用你對這些品牌的知識，以及網路上的公開資訊（如媒體報導、社群趨勢、官方消息等）來進行分析。
+            2.  **內容生成**: 根據搜集到的資訊，完成下方的 JSON 物件。如果某些特定欄位的資訊較少或難以從公開管道確認，請根據你的產業知識做出合理的分析，並可在文字中註明'根據市場普遍認知'或類似的字眼。我們追求的是資訊的豐富性與洞察力。
+            3.  **格式要求**: 絕對不要在任何文字輸出中使用雙引號 " 字符，並嚴格遵循 JSON 格式。
+
+            請生成一個嚴格遵循以下結構的 JSON 物件：
+            {
+                "analysisResults": [
+                    {
+                        "brandName": "...",
+                        "competitorType": "...",
+                        "analysis": {
+                            "productPositioning": "...",
+                            "userNeeds": "...",
+                            "featureComparison": "...",
+                            "uiUxDesign": "...",
+                            "copywritingStyle": "...",
+                            "visualStyle": "...",
+                            "revenueModel": "...",
+                            "marketingStrategy": "...",
+                            "userOps": "..."
+                        }
+                    }
+                ],
+                "socialBuzzTrend": {
+                    "labels": ["..."],
+                    "datasets": [
+                        {
+                            "label": "...",
+                            "data": [...]
+                        }
+                    ]
+                },
+                "combinedTimeline": [
+                    {
+                        "brandName": "...",
+                        "competitorType": "...",
+                        "date": "YYYY-MM-DD",
+                        "title": "...",
+                        "description": "...",
+                        "category": "...",
+                        "isPredicted": false
+                    }
+                ],
+                "alerts": [
+                    {
+                        "type": "opportunity" or "threat",
+                        "text": "..."
+                    }
+                ],
+                "aiStrategicAnalysis": "..."
+            }
+            `;
+            
+            const payload = {
+                contents: [{ role: "user", parts: [{ text: prompt }] }],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                }
+            };
+            
+            const apiKey = ""; // Canvas 環境會提供
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                const errorBody = await response.text();
+                throw new Error(`API 請求失敗，狀態碼：${response.status}. 回應: ${errorBody}`);
+            }
+
+            const result = await response.json();
+            
+            if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts[0].text) {
+                const jsonString = result.candidates[0].content.parts[0].text;
+                try {
+                    return JSON.parse(jsonString);
+                } catch (e) {
+                    console.error("JSON 解析失敗:", e);
+                    console.error("收到的無效 JSON 字串:", jsonString);
+                    throw new Error(`AI 回應的內容不是有效的 JSON 格式。`);
+                }
+            } else {
+                 if (result.promptFeedback && result.promptFeedback.blockReason) {
+                     throw new Error(`請求被封鎖，原因: ${result.promptFeedback.blockReason.reason}`);
+                }
+                throw new Error("AI 未能生成有效的分析資料。");
+            }
+        }
+        
+        function renderResults(data) {
+            renderSocialBuzzChart(data.socialBuzzTrend);
+            renderComparisonTable(data.analysisResults);
+            renderTimeline(data.combinedTimeline);
+            renderAlerts(data.alerts);
+            summaryContainer.innerHTML = data.aiStrategicAnalysis.replace(/\n/g, '<br>');
+        }
+
+        async function downloadReport() {
+            const content = document.getElementById('downloadable-content');
+            if (!content) return;
+
+            const originalButtonText = downloadBtn.innerHTML;
+            downloadBtn.innerHTML = '<span>正在產生報告...</span>';
+            downloadBtn.disabled = true;
+
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            try {
+                const canvas = await html2canvas(content, {
+                    scale: 2, 
+                    useCORS: true,
+                    backgroundColor: '#ffffff'
+                });
+
+                const imgData = canvas.toDataURL('image/png');
+                
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({
+                    orientation: 'p',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+                const canvasWidth = canvas.width;
+                const canvasHeight = canvas.height;
+                
+                const imgWidth = pdfWidth - 20; // with margin
+                const imgHeight = (canvasHeight * imgWidth) / canvasWidth;
+                
+                let heightLeft = imgHeight;
+                let position = 10; // top margin
+
+                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                heightLeft -= (pdfHeight - 20);
+
+                while (heightLeft > 0) {
+                    position = position - pdfHeight + 20; // move image up
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                    heightLeft -= (pdfHeight - 20);
+                }
+
+                pdf.save('AI競品分析報告.pdf');
+
+            } catch (error) {
+                console.error("PDF generation failed:", error);
+                showError("報告下載失敗，請稍後再試。");
+            } finally {
+                 downloadBtn.innerHTML = originalButtonText;
+                 downloadBtn.disabled = false;
+            }
+        }
+
+        function renderSocialBuzzChart(trendData) {
+            if (socialBuzzChart) {
+                socialBuzzChart.destroy();
+            }
+            const brandColors = {
+                my_brand: '#4f46e5',
+                direct: '#db2777',
+                indirect: '#f59e0b',
+                potential: '#10b981',
+            };
+            const datasets = trendData.datasets.map(ds => {
+                const brandInfo = findBrandInfo(ds.label);
+                return {
+                    ...ds,
+                    borderColor: brandColors[brandInfo.type] || '#6b7280',
+                    backgroundColor: (brandColors[brandInfo.type] || '#6b7280') + '33', // Add alpha for fill
+                    tension: 0.2,
+                    fill: true,
+                }
+            });
+
+            socialBuzzChart = new Chart(socialBuzzChartCanvas, {
+                type: 'line',
+                data: {
+                    labels: trendData.labels,
+                    datasets: datasets,
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '社群聲量指數'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                    }
+                }
+            });
+        }
+        
+        function renderComparisonTable(results) {
+            comparisonTable.innerHTML = ''; 
+
+            const analysisKeys = [
+                { key: 'productPositioning', label: '產品定位' },
+                { key: 'userNeeds', label: '用戶需求 (痛點/偏好)' },
+                { key: 'featureComparison', label: '功能對比 (優劣/創新)' },
+                { key: 'uiUxDesign', label: '界面與體驗設計' },
+                { key: 'copywritingStyle', label: '行銷文案風格' },
+                { key: 'visualStyle', label: '視覺設計風格' },
+                { key: 'revenueModel', label: '盈利模式' },
+                { key: 'marketingStrategy', label: '市場營銷策略' },
+                { key: 'userOps', label: '用戶運營策略' },
+            ];
+
+            const thead = document.createElement('thead');
+            let headerRow = '<tr class="table-sticky-header">';
+            headerRow += '<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">分析維度</th>';
+            results.forEach(brand => {
+                headerRow += `<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <div class="flex flex-col">
+                        <span class="text-base font-bold text-gray-800">${brand.brandName}</span>
+                        <span class="text-xs font-medium ${getCompetitorTypeColor(brand.competitorType)}">${formatCompetitorType(brand.competitorType)}</span>
+                    </div>
+                </th>`;
+            });
+            headerRow += '</tr>';
+            thead.innerHTML = headerRow;
+            comparisonTable.appendChild(thead);
+
+            const tbody = document.createElement('tbody');
+            tbody.className = "bg-white divide-y divide-gray-200";
+
+            analysisKeys.forEach(item => {
+                let row = '<tr>';
+                row += `<td class="px-6 py-4 whitespace-nowrap font-bold text-gray-900 align-top">${item.label}</td>`;
+                results.forEach(brand => {
+                    const analysisText = brand.analysis && brand.analysis[item.key] ? brand.analysis[item.key] : 'N/A';
+                    row += `<td class="px-6 py-4 whitespace-pre-wrap align-top">${analysisText}</td>`;
+                });
+                row += '</tr>';
+                tbody.innerHTML += row;
+            });
+            comparisonTable.appendChild(tbody);
+        }
+
+        function renderTimeline(events) {
+            timelineContainer.innerHTML = '';
+            if (!events || events.length === 0) {
+                timelineContainer.innerHTML = '<p class="text-gray-500 p-4">AI 未能找到相關的行銷活動。</p>';
+                return;
+            }
+            events.forEach(event => {
+                const timelineItemClass = `timeline-item-${event.competitorType}`;
+                const categoryColor = getEventCategoryColor(event.category);
+                const isPredictedClass = event.isPredicted ? 'predicted-event' : '';
+                
+                const item = document.createElement('div');
+                item.className = `timeline-item relative mb-6 ${timelineItemClass}`;
+                item.innerHTML = `
+                    <div class="ml-10">
+                        <span class="absolute -left-10 text-sm font-semibold text-gray-500">${event.date}</span>
+                        <div class="p-4 bg-gray-50 rounded-lg border-2 ${isPredictedClass} border-gray-200">
+                           <div class="flex justify-between items-center mb-2">
+                               <span class="font-semibold px-2.5 py-0.5 rounded-full text-xs ${categoryColor.bg} ${categoryColor.text}">${event.category} ${event.isPredicted ? '(預測)' : ''}</span>
+                               <span class="font-bold text-sm ${getCompetitorTypeColor(event.competitorType)}">${event.brandName}</span>
+                           </div>
+                           <h3 class="text-lg font-bold text-gray-800">${event.title}</h3>
+                           <p class="text-gray-600 mt-1">${event.description}</p>
+                        </div>
+                    </div>
+                `;
+                timelineContainer.appendChild(item);
+            });
+        }
+
+        function renderAlerts(alerts) {
+            alertsContainer.innerHTML = '';
+            if (!alerts || alerts.length === 0) {
+                alertsContainer.innerHTML = '<p class="text-gray-500">目前無重大機會或威脅警報。</p>';
+                return;
+            }
+            alerts.forEach(alert => {
+                const isOpportunity = alert.type === 'opportunity';
+                const bgColor = isOpportunity ? 'bg-green-50' : 'bg-red-50';
+                const borderColor = isOpportunity ? 'border-green-500' : 'border-red-500';
+                const iconColor = isOpportunity ? 'text-green-500' : 'text-red-500';
+                const iconSvg = isOpportunity 
+                    ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>`
+                    : `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`;
+                
+                const alertEl = document.createElement('div');
+                alertEl.className = `flex items-start p-4 rounded-lg border-l-4 ${bgColor} ${borderColor}`;
+                alertEl.innerHTML = `
+                    <div class="flex-shrink-0 ${iconColor}">${iconSvg}</div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-800">${alert.text}</p>
+                    </div>
+                `;
+                alertsContainer.appendChild(alertEl);
+            });
+        }
+        
+        // Helper function to find brand info for coloring chart
+        function findBrandInfo(brandName) {
+            if (brandName === myBrandInput.value.trim()) {
+                return { type: 'my_brand' };
+            }
+            const competitorEl = Array.from(competitorList.children).find(div => div.querySelector('input').value.trim() === brandName);
+            return competitorEl ? { type: competitorEl.querySelector('select').value } : { type: 'direct' };
+        }
+
+        function getEventCategoryColor(category) {
+            const colors = {
+                "產品發布": { bg: "bg-blue-100", text: "text-blue-800" },
+                "社群活動": { bg: "bg-pink-100", text: "text-pink-800" },
+                "代言人合作": { bg: "bg-purple-100", text: "text-purple-800" },
+                "公關危機": { bg: "bg-red-100", text: "text-red-800" },
+                "節日行銷": { bg: "bg-green-100", text: "text-green-800" },
+                "線下活動": { bg: "bg-yellow-100", text: "text-yellow-800" },
+                "default": { bg: "bg-gray-100", text: "text-gray-800" }
+            };
+            return colors[category] || colors["default"];
+        }
+
+        function getCompetitorTypeColor(type) {
+            const colors = {
+                my_brand: 'text-indigo-600',
+                direct: 'text-red-600',
+                indirect: 'text-yellow-600',
+                potential: 'text-green-600'
+            };
+            return colors[type] || 'text-gray-500';
+        }
+        
+        function formatCompetitorType(type) {
+            const labels = {
+                my_brand: '我方品牌',
+                direct: '直接競品',
+                indirect: '間接競品',
+                potential: '潛在競品'
+            };
+            return labels[type] || type;
+        }
+        
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+        }
+
+    </script>
+
+</body>
+</html>
