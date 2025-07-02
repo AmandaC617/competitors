@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-    <!-- Add jsPDF and html2canvas for PDF export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,7 +20,7 @@
         .table-sticky-header th {
             position: sticky;
             top: 0;
-            background-color: #f9fafb; /* bg-gray-50 */
+            background-color: #f9fafb;
             z-index: 10;
         }
         .competitor-card {
@@ -33,7 +32,6 @@
             border-radius: 0.5rem;
             border: 1px solid #e5e7eb;
         }
-        /* Timeline Styles */
         .timeline-item::before {
             content: '';
             position: absolute;
@@ -49,14 +47,13 @@
         .timeline-item-direct::before { border-color: #db2777; }
         .timeline-item-indirect::before { border-color: #f59e0b; }
         .timeline-item-potential::before { border-color: #10b981; }
-
         .timeline-item:not(:last-child)::after {
             content: '';
             position: absolute;
             left: -22px;
             top: 25px;
             width: 2px;
-            height: calc(100% + 1.5rem); /* 1.5rem is the gap */
+            height: calc(100% + 1.5rem);
             background-color: #e0e0e0;
         }
         .predicted-event {
@@ -67,8 +64,6 @@
 <body class="bg-gray-100 text-gray-800">
 
     <div class="container mx-auto p-4 md:p-8">
-      
-        <!-- API Key 輸入區 -->
         <div class="max-w-2xl mx-auto mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex flex-col md:flex-row items-center gap-3">
             <span class="font-semibold text-yellow-800">Google Gemini API Key：</span>
             <input type="password" id="api-key-input" class="flex-1 px-3 py-2 border border-gray-300 rounded-md text-base" placeholder="請貼上你的 Google AI API Key" />
@@ -82,37 +77,31 @@
         </header>
 
         <div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-lg mb-8">
-            <!-- Inputs Section -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                <!-- My Brand & Goals -->
                 <div class="space-y-4">
                     <div>
                         <label for="my-brand-input" class="block text-sm font-medium text-gray-700 mb-1">您的品牌</label>
-                        <input type="text" id="my-brand-input" class="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="請輸入您的品牌名稱">
+                        <input type="text" id="my-brand-input" class="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" />
                     </div>
                     <div>
                         <label for="my-goal-input" class="block text-sm font-medium text-gray-700 mb-1">本季行銷目標</label>
-                        <textarea id="my-goal-input" rows="2" class="w-full px-4 py-2 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="請簡述本季的行銷目標"></textarea>
+                        <textarea id="my-goal-input" rows="2" class="w-full px-4 py-2 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"></textarea>
                     </div>
-                     <div>
+                    <div>
                         <label for="my-persona-input" class="block text-sm font-medium text-gray-700 mb-1">目標受眾輪廓 (Persona)</label>
-                        <textarea id="my-persona-input" rows="3" class="w-full px-4 py-2 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="請簡述目標受眾的特徵、痛點等"></textarea>
+                        <textarea id="my-persona-input" rows="3" class="w-full px-4 py-2 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"></textarea>
                     </div>
                 </div>
-                <!-- Competitors -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">競爭對手</label>
-                    <div id="competitor-list" class="space-y-3">
-                        <!-- Competitor inputs will be added here -->
-                    </div>
-                    <button id="add-competitor-btn" class="mt-3 w-full text-indigo-600 border-2 border-dashed border-indigo-300 hover:border-indigo-500 hover:bg-indigo-50 font-semibold py-2 px-4 rounded-lg transition">+ 新增競品</button>
+                    <div id="competitor-list" class="space-y-3"></div>
+                    <button id="add-competitor-btn" class="mt-3 w-full text-indigo-600 border-2 border-dashed border-indigo-300 hover:border-indigo-500 hover:bg-indigo-50 font-semibold py-2 px-4 rounded-lg transition">新增競品</button>
                 </div>
             </div>
-            <!-- Analyze Button -->
             <div class="mt-6">
-                <button id="analyze-btn" class="w-full bg-indigo-600 text-white font-bold px-8 py-4 text-lg rounded-lg hover:bg-indigo-700 transition-transform transform hover:scale-101 focus:outline-none">
+                <button id="analyze-btn" class="w-full bg-indigo-600 text-white font-bold px-8 py-4 text-lg rounded-lg hover:bg-indigo-700 transition-transform transform hover:scale-101 focus:outline-none focus:ring-4 focus:ring-indigo-300">
                     <span class="flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6m-4 0h4"></path></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
                         開始深度分析
                     </span>
                 </button>
@@ -121,7 +110,7 @@
 
         <div id="loader" class="text-center py-10 hidden">
             <div role="status" class="flex justify-center items-center flex-col">
-                <svg aria-hidden="true" class="w-12 h-12 mb-4 text-gray-200 animate-spin dark:text-gray-600 fill-indigo-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08157 50.5908C9.08157 73.1865 27.4043 91.5092 50 91.5092C72.5957 91.5092 90.9184 73.1865 90.9184 50.5908C90.9184 27.9951 72.5957 9.67236 50 9.67236C27.4043 9.67236 9.08157 27.9951 9.08157 50.5908Z"></path><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5536C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7235 75.2124 7.41289C69.5422 4.10237 63.2754 1.94025 56.7698 1.05124C51.7666 0.367006 46.6976 0.446843 41.7345 1.27873C39.2619 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0502 10.1071C47.8511 9.5209 51.7191 9.46681 55.5402 10.0491C60.864 10.8615 65.9921 12.7486 70.6331 15.6292C75.274 18.5098 79.3347 22.3136 82.5849 26.8236C84.9175 29.9116 86.7999 33.3717 88.1578 37.0513C89.083 39.4074 91.5422 40.6781 93.9676 39.0409Z"></path></svg>
+                <svg aria-hidden="true" class="w-12 h-12 mb-4 text-gray-200 animate-spin dark:text-gray-600 fill-indigo-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="10" fill="none"></circle></svg>
                 <p class="text-lg text-gray-600 font-semibold">AI 正在進行深度比較分析，請稍候...</p>
                 <p class="text-sm text-gray-500 mt-1">這可能需要 90-180 秒</p>
             </div>
@@ -130,50 +119,38 @@
         <div id="error-message" class="text-center p-4 bg-red-100 text-red-700 rounded-lg hidden"></div>
 
         <div id="results-container" class="hidden space-y-8">
-            <!-- Results Header with Download Button -->
             <div class="flex justify-between items-center mb-0">
                 <h2 class="text-3xl font-bold text-gray-800">分析結果</h2>
                 <button id="download-btn" class="bg-green-600 text-white font-bold px-6 py-2 rounded-lg hover:bg-green-700 transition focus:outline-none focus:ring-4 focus:ring-green-300">
                     <span class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm6-14a1 1 0 00-1 1v8.586l-2.293-2.293a1 1 0 00-1.414 1.414l4 4a1 1 0 001.414 0l4-4a1 1 0 00-1.414-1.414L11 12.586V4a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm6-1a1 1 0 011-1h2a1 1 0 100-2h-2a1 1 0 01-1-1v-3.586l1.293 1.293a1 1 0 001.414 0z" clip-rule="evenodd" /></svg>
                         下載 PDF 報告
                     </span>
                 </button>
             </div>
-
-            <!-- Content to be downloaded -->
             <div id="downloadable-content" class="space-y-8">
-                <!-- Social Buzz Trend -->
                 <div class="bg-white rounded-xl shadow-lg">
                     <h2 class="text-2xl font-bold text-gray-800 p-6">社群聲量趨勢圖</h2>
                     <div class="p-6 pt-0">
                         <canvas id="social-buzz-chart"></canvas>
                     </div>
                 </div>
-
-                <!-- Comparison Matrix -->
                 <div class="bg-white rounded-xl shadow-lg overflow-x-auto">
                     <h2 class="text-2xl font-bold text-gray-800 p-6">競品比較矩陣</h2>
                     <table id="comparison-table" class="min-w-full text-sm text-left"></table>
                 </div>
-
-                <!-- Marketing Timeline -->
                 <div class="bg-white rounded-xl shadow-lg">
                     <h2 class="text-2xl font-bold text-gray-800 p-6">整合行銷活動時間軸</h2>
                     <div id="timeline-container" class="relative border-l-2 border-gray-200 ml-8 p-6 pt-0"></div>
                 </div>
-                
-                <!-- Alerts -->
                 <div class="bg-white rounded-xl shadow-lg">
                     <h2 class="text-2xl font-bold text-gray-800 p-6">機會與威脅警報</h2>
                     <div id="alerts-container" class="px-6 pb-6 space-y-4"></div>
                 </div>
-
-                <!-- AI Strategic Analysis -->
                 <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
                     <h2 class="text-2xl font-bold mb-4 text-gray-800">
                         <span class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01"></path></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
                             AI 策略分析與洞察
                         </span>
                     </h2>
@@ -183,478 +160,474 @@
         </div>
     </div>
 
-    <script type="module">
-        const myBrandInput = document.getElementById('my-brand-input');
-        const myGoalInput = document.getElementById('my-goal-input');
-        const myPersonaInput = document.getElementById('my-persona-input');
-        const competitorList = document.getElementById('competitor-list');
-        const addCompetitorBtn = document.getElementById('add-competitor-btn');
-        const analyzeBtn = document.getElementById('analyze-btn');
-        const loader = document.getElementById('loader');
-        const resultsContainer = document.getElementById('results-container');
-        const errorMessage = document.getElementById('error-message');
-        const socialBuzzChartCanvas = document.getElementById('social-buzz-chart');
-        const comparisonTable = document.getElementById('comparison-table');
-        const timelineContainer = document.getElementById('timeline-container');
-        const alertsContainer = document.getElementById('alerts-container');
-        const summaryContainer = document.getElementById('ai-summary');
-        const downloadBtn = document.getElementById('download-btn');
+<script type="module">
+const myBrandInput = document.getElementById('my-brand-input');
+const myGoalInput = document.getElementById('my-goal-input');
+const myPersonaInput = document.getElementById('my-persona-input');
+const competitorList = document.getElementById('competitor-list');
+const addCompetitorBtn = document.getElementById('add-competitor-btn');
+const analyzeBtn = document.getElementById('analyze-btn');
+const loader = document.getElementById('loader');
+const resultsContainer = document.getElementById('results-container');
+const errorMessage = document.getElementById('error-message');
+const socialBuzzChartCanvas = document.getElementById('social-buzz-chart');
+const comparisonTable = document.getElementById('comparison-table');
+const timelineContainer = document.getElementById('timeline-container');
+const alertsContainer = document.getElementById('alerts-container');
+const summaryContainer = document.getElementById('ai-summary');
+const downloadBtn = document.getElementById('download-btn');
+const apiKeyInput = document.getElementById('api-key-input');
+const saveApiKeyBtn = document.getElementById('save-api-key-btn');
+const apiKeyStatus = document.getElementById('api-key-status');
 
-        const apiKeyInput = document.getElementById('api-key-input');
-        const saveApiKeyBtn = document.getElementById('save-api-key-btn');
-        const apiKeyStatus = document.getElementById('api-key-status');
+let socialBuzzChart = null;
 
-        let socialBuzzChart = null;
+apiKeyInput.value = localStorage.getItem('gemini_api_key') || '';
+saveApiKeyBtn.addEventListener('click', () => {
+    const key = apiKeyInput.value.trim();
+    if (key) {
+        localStorage.setItem('gemini_api_key', key);
+        apiKeyStatus.classList.remove('hidden');
+        setTimeout(() => apiKeyStatus.classList.add('hidden'), 2000);
+    }
+});
 
-        // 初始化 API Key
-        apiKeyInput.value = localStorage.getItem('gemini_api_key') || '';
-        saveApiKeyBtn.addEventListener('click', () => {
-            const key = apiKeyInput.value.trim();
-            if (key) {
-                localStorage.setItem('gemini_api_key', key);
-                apiKeyStatus.classList.remove('hidden');
-                setTimeout(() => apiKeyStatus.classList.add('hidden'), 2000);
-            }
-        });
+addCompetitorBtn.addEventListener('click', addCompetitorField);
+analyzeBtn.addEventListener('click', handleAnalysis);
+downloadBtn.addEventListener('click', downloadReport);
 
-        addCompetitorBtn.addEventListener('click', addCompetitorField);
-        analyzeBtn.addEventListener('click', handleAnalysis);
-        downloadBtn.addEventListener('click', downloadReport);
+addCompetitorField();
 
-        addCompetitorField();
+function addCompetitorField() {
+    const newField = document.createElement('div');
+    newField.className = 'competitor-card';
+    newField.innerHTML = `
+        <input type="text" class="flex-grow w-full px-3 py-2 text-base border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="競品名稱" />
+        <select class="px-3 py-2 text-base border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition">
+            <option value="direct">直接競品</option>
+            <option value="indirect">間接競品</option>
+            <option value="potential">潛在競品</option>
+        </select>
+        <button type="button" class="text-gray-400 hover:text-red-500" onclick="this.parentElement.remove()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L10 11.414l2.707-2.707a1 1 0 00-1.414-1.414L10 8.586l-1.293-1.293z" clip-rule="evenodd" /></svg>
+        </button>
+    `;
+    competitorList.appendChild(newField);
+}
 
-        function addCompetitorField() {
-            const newField = document.createElement('div');
-            newField.className = 'competitor-card';
-            newField.innerHTML = `
-                <input type="text" class="flex-grow w-full px-3 py-2 text-base border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="競品名稱">
-                <select class="px-3 py-2 text-base border border-gray-300 rounded-md focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition">
-                    <option value="direct">直接競品</option>
-                    <option value="indirect">間接競品</option>
-                    <option value="potential">潛在競品</option>
-                </select>
-                <button type="button" class="text-gray-400 hover:text-red-500" onclick="this.parentElement.remove()">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L10 11.414l2.707-2.707a1 1 0 00-1.414-1.414L10 9.586 8.707 7.293z" clip-rule="evenodd"/></svg>
-                </button>
-            `;
-            competitorList.appendChild(newField);
+async function handleAnalysis() {
+    const myBrand = {
+        name: myBrandInput.value.trim(),
+        goal: myGoalInput.value.trim(),
+        persona: myPersonaInput.value.trim(),
+    };
+    const competitors = Array.from(competitorList.children).map(div => ({
+        name: div.querySelector('input').value.trim(),
+        type: div.querySelector('select').value
+    })).filter(c => c.name);
+
+    if (!myBrand.name || competitors.length === 0) {
+        showError('請輸入您的品牌，並至少新增一個有效的競品。');
+        return;
+    }
+
+    resultsContainer.classList.add('hidden');
+    errorMessage.classList.add('hidden');
+    loader.classList.remove('hidden');
+    analyzeBtn.disabled = true;
+    analyzeBtn.classList.add('cursor-not-allowed', 'opacity-70');
+
+    try {
+        const analysisData = await fetchAndAnalyzeData(myBrand, competitors);
+        if (!analysisData || !analysisData.analysisResults || !analysisData.aiStrategicAnalysis || !analysisData.combinedTimeline || !analysisData.socialBuzzTrend || !analysisData.alerts) {
+            throw new Error('AI 回應資料結構不完整，無法進行分析。');
         }
+        renderResults(analysisData);
+        resultsContainer.classList.remove('hidden');
+    } catch (error) {
+        console.error('分析過程中發生錯誤:', error);
+        showError(`分析失敗：${error.message}`);
+    } finally {
+        loader.classList.add('hidden');
+        analyzeBtn.disabled = false;
+        analyzeBtn.classList.remove('cursor-not-allowed', 'opacity-70');
+    }
+}
 
-        async function handleAnalysis() {
-            const myBrand = {
-                name: myBrandInput.value.trim(),
-                goal: myGoalInput.value.trim(),
-                persona: myPersonaInput.value.trim(),
-            };
-            const competitors = Array.from(competitorList.children).map(div => ({
-                name: div.querySelector('input').value.trim(),
-                type: div.querySelector('select').value
-            })).filter(c => c.name);
-
-            if (!myBrand.name || competitors.length === 0) {
-                showError('請輸入您的品牌，並至少新增一個有效的競品。');
-                return;
-            }
-
-            resultsContainer.classList.add('hidden');
-            errorMessage.classList.add('hidden');
-            loader.classList.remove('hidden');
-            analyzeBtn.disabled = true;
-            analyzeBtn.classList.add('cursor-not-allowed', 'opacity-70');
-
-            try {
-                const analysisData = await fetchAndAnalyzeData(myBrand, competitors);
-                if (!analysisData || !analysisData.analysisResults || !analysisData.aiStrategicAnalysis || !analysisData.combinedTimeline || !analysisData.socialBuzzTrend || !analysisData.alerts) {
-                    throw new Error('AI 回應資料結構不完整，無法進行分析。');
-                }
-                
-                renderResults(analysisData);
-                resultsContainer.classList.remove('hidden');
-
-            } catch (error) {
-                console.error('分析過程中發生錯誤:', error);
-                showError(`分析失敗：${error.message}`);
-            } finally {
-                loader.classList.add('hidden');
-                analyzeBtn.disabled = false;
-                analyzeBtn.classList.remove('cursor-not-allowed', 'opacity-70');
-            }
-        }
-
-        async function fetchAndAnalyzeData(myBrand, competitors) {
-            const competitorsString = competitors.map(c => `「${c.name}」(${c.type}競品)`).join('、');
-            const today = new Date();
-            const oneYearAgo = new Date();
-            oneYearAgo.setFullYear(today.getFullYear() - 1);
-            const formatDate = (date) => date.toISOString().split('T')[0];
-            const todayStr = formatDate(today);
-            const oneYearAgoStr = formatDate(oneYearAgo);
-
-            // **MODIFIED PROMPT**
-            const prompt = `
-作為一名頂尖的市場策略顧問，請對品牌「${myBrand.name}」(我方品牌) 與其競爭對手 ${competitorsString} 進行深度、全面的比較分析，並基於你的廣泛資料與產業知識，彙整最新公開資訊（如媒體、社群、官網等）。我方品牌的本季行銷目標是：「${myBrand.goal || '未提供'}」。目標受眾：「${myBrand.persona || '未提供'}」。
-
-請嚴格依下方 JSON 結構填寫分析，每一項必填。如無資料請根據產業經驗合理推估。嚴禁在任何輸出中使用雙引號 " 字符，僅允許單引號。JSON 結構如下：
+async function fetchAndAnalyzeData(myBrand, competitors) {
+    const competitorsString = competitors.map(c => `「${c.name}」(${c.type}競品)`).join('、');
+    const prompt = `
+作為一名頂尖的市場策略顧問，請對品牌「${myBrand.name}」(我方品牌) 與其競爭對手 ${competitorsString} 進行深度、全面的比較分析，並基於你的廣泛資料庫與專業經驗，輸出：多維度比較、社群聲量趨勢、整合行銷活動時間軸、機會與威脅警報，與 AI 策略建議。
+請嚴格只輸出**純 JSON 結構**（不要加任何說明、註解、也不要用 markdown code block），內容如下：
 {
-    'analysisResults': [
+    "analysisResults": [
         {
-            'brandName': '...',
-            'competitorType': '...',
-            'analysis': {
-                'productPositioning': '...',
-                'userNeeds': '...',
-                'featureComparison': '...',
-                'uiUxDesign': '...',
-                'copywritingStyle': '...',
-                'visualStyle': '...',
-                'revenueModel': '...',
-                'marketingStrategy': '...',
-                'userOps': '...'
+            "brandName": "...",
+            "competitorType": "...",
+            "analysis": {
+                "productPositioning": "...",
+                "userNeeds": "...",
+                "featureComparison": "...",
+                "uiUxDesign": "...",
+                "copywritingStyle": "...",
+                "visualStyle": "...",
+                "revenueModel": "...",
+                "marketingStrategy": "...",
+                "userOps": "..."
             }
         }
     ],
-    'socialBuzzTrend': {
-        'labels': ['...'],
-        'datasets': [
+    "socialBuzzTrend": {
+        "labels": ["..."],
+        "datasets": [
             {
-                'label': '...',
-                'data': [...]
+                "label": "...",
+                "data": [...]
             }
         ]
     },
-    'combinedTimeline': [
+    "combinedTimeline": [
         {
-            'brandName': '...',
-            'competitorType': '...',
-            'date': 'YYYY-MM-DD',
-            'title': '...',
-            'description': '...',
-            'category': '...',
-            'isPredicted': false
+            "brandName": "...",
+            "competitorType": "...",
+            "date": "YYYY-MM-DD",
+            "title": "...",
+            "description": "...",
+            "category": "...",
+            "isPredicted": false
         }
     ],
-    'alerts': [
+    "alerts": [
         {
-            'type': 'opportunity' or 'threat',
-            'text': '...'
+            "type": "opportunity" or "threat",
+            "text": "..."
         }
     ],
-    'aiStrategicAnalysis': '...'
+    "aiStrategicAnalysis": "..."
 }
 `;
 
-            const payload = {
-                contents: [{ role: "user", parts: [{ text: prompt }] }],
-                generationConfig: {
-                    responseMimeType: "application/json",
-                }
-            };
-
-            // 取得 API Key
-            const apiKey = localStorage.getItem('gemini_api_key') || '';
-            if (!apiKey) {
-                throw new Error('請先輸入並儲存 Google Gemini API Key');
-            }
-
-            // 使用 Gemini 2.5 Pro (API名稱為 gemini-1.5-pro)
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`;
-
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (!response.ok) {
-                const errorBody = await response.text();
-                throw new Error(`API 請求失敗，狀態碼：${response.status}. 回應: ${errorBody}`);
-            }
-
-            const result = await response.json();
-            
-            if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts[0].text) {
-                // 將單引號換成雙引號以利 JSON.parse
-                const jsonString = result.candidates[0].content.parts[0].text.replace(/'/g, '"');
-                try {
-                    return JSON.parse(jsonString);
-                } catch (e) {
-                    console.error("JSON 解析失敗:", e);
-                    console.error("收到的無效 JSON 字串:", jsonString);
-                    throw new Error(`AI 回應的內容不是有效的 JSON 格式。`);
-                }
-            } else {
-                 if (result.promptFeedback && result.promptFeedback.blockReason) {
-                     throw new Error(`請求被封鎖，原因: ${result.promptFeedback.blockReason.reason}`);
-                }
-                throw new Error("AI 未能生成有效的分析資料。");
-            }
+    const payload = {
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        generationConfig: {
+            responseMimeType: "application/json",
         }
-        
-        function renderResults(data) {
-            renderSocialBuzzChart(data.socialBuzzTrend);
-            renderComparisonTable(data.analysisResults);
-            renderTimeline(data.combinedTimeline);
-            renderAlerts(data.alerts);
-            summaryContainer.innerHTML = data.aiStrategicAnalysis.replace(/\n/g, '<br>');
+    };
+
+    const apiKey = localStorage.getItem('gemini_api_key') || '';
+    if (!apiKey) throw new Error('請先輸入並儲存 Google Gemini API Key');
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`;
+
+    const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+        const errorBody = await response.text();
+        throw new Error(`API 請求失敗，狀態碼：${response.status}. 回應: ${errorBody}`);
+    }
+
+    const result = await response.json();
+    let aiText = "";
+    if (
+        result.candidates &&
+        result.candidates[0].content &&
+        result.candidates[0].content.parts &&
+        result.candidates[0].content.parts[0].text
+    ) {
+        aiText = result.candidates[0].content.parts[0].text;
+    } else {
+        throw new Error("AI 未能生成有效的分析資料。");
+    }
+
+    // 清理 Gemini 輸出
+    aiText = aiText.replace(/```json|```/g, "").trim();
+    aiText = aiText
+        .split('\n')
+        .filter(line => !line.trim().startsWith('//'))
+        .join('\n');
+    if (!aiText.trim().startsWith('{')) {
+        aiText = aiText.slice(aiText.indexOf('{'));
+    }
+    try {
+        return JSON.parse(aiText);
+    } catch (e) {
+        console.error("JSON 解析失敗:", e);
+        console.error("收到的無效 JSON 字串:", aiText);
+        throw new Error(`AI 回應的內容不是有效的 JSON 格式。請檢查 API Key、Prompt、或內容長度。原始內容如下：\n` + aiText);
+    }
+}
+
+function renderResults(data) {
+    renderSocialBuzzChart(data.socialBuzzTrend);
+    renderComparisonTable(data.analysisResults);
+    renderTimeline(data.combinedTimeline);
+    renderAlerts(data.alerts);
+    summaryContainer.innerHTML = data.aiStrategicAnalysis.replace(/\n/g, '<br>');
+}
+
+async function downloadReport() {
+    const content = document.getElementById('downloadable-content');
+    if (!content) return;
+    const originalButtonText = downloadBtn.innerHTML;
+    downloadBtn.innerHTML = '<span>正在產生報告...</span>';
+    downloadBtn.disabled = true;
+    await new Promise(resolve => setTimeout(resolve, 100));
+    try {
+        const canvas = await html2canvas(content, {
+            scale: 2, 
+            useCORS: true,
+            backgroundColor: '#ffffff'
+        });
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({
+            orientation: 'p',
+            unit: 'mm',
+            format: 'a4'
+        });
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+        const imgWidth = pdfWidth - 20;
+        const imgHeight = (canvasHeight * imgWidth) / canvasWidth;
+        let heightLeft = imgHeight;
+        let position = 10;
+        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+        heightLeft -= (pdfHeight - 20);
+        while (heightLeft > 0) {
+            position = position - pdfHeight + 20;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+            heightLeft -= (pdfHeight - 20);
         }
+        pdf.save('AI競品分析報告.pdf');
+    } catch (error) {
+        console.error("PDF generation failed:", error);
+        showError("報告下載失敗，請稍後再試。");
+    } finally {
+         downloadBtn.innerHTML = originalButtonText;
+         downloadBtn.disabled = false;
+    }
+}
 
-        async function downloadReport() {
-            const content = document.getElementById('downloadable-content');
-            if (!content) return;
-
-            const originalButtonText = downloadBtn.innerHTML;
-            downloadBtn.innerHTML = '<span>正在產生報告...</span>';
-            downloadBtn.disabled = true;
-
-            await new Promise(resolve => setTimeout(resolve, 100));
-
-            try {
-                const canvas = await html2canvas(content, {
-                    scale: 2, 
-                    useCORS: true,
-                    backgroundColor: '#ffffff'
-                });
-
-                const imgData = canvas.toDataURL('image/png');
-                
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF({
-                    orientation: 'p',
-                    unit: 'mm',
-                    format: 'a4'
-                });
-
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = pdf.internal.pageSize.getHeight();
-                const canvasWidth = canvas.width;
-                const canvasHeight = canvas.height;
-                
-                const imgWidth = pdfWidth - 20; // with margin
-                const imgHeight = (canvasHeight * imgWidth) / canvasWidth;
-                
-                let heightLeft = imgHeight;
-                let position = 10; // top margin
-
-                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                heightLeft -= (pdfHeight - 20);
-
-                while (heightLeft > 0) {
-                    position = position - pdfHeight + 20; // move image up
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                    heightLeft -= (pdfHeight - 20);
-                }
-
-                pdf.save('AI競品分析報告.pdf');
-
-            } catch (error) {
-                console.error("PDF generation failed:", error);
-                showError("報告下載失敗，請稍後再試。");
-            } finally {
-                 downloadBtn.innerHTML = originalButtonText;
-                 downloadBtn.disabled = false;
-            }
+function renderSocialBuzzChart(trendData) {
+    if (!trendData || !trendData.labels || !Array.isArray(trendData.datasets)) {
+        socialBuzzChartCanvas.parentNode.innerHTML = '<div class="text-red-500 p-4">AI 沒有產生有效的社群聲量資料。</div>';
+        return;
+    }
+    if (socialBuzzChart) {
+        socialBuzzChart.destroy();
+    }
+    const brandColors = {
+        my_brand: '#4f46e5',
+        direct: '#db2777',
+        indirect: '#f59e0b',
+        potential: '#10b981',
+    };
+    const datasets = trendData.datasets.map(ds => {
+        const brandInfo = findBrandInfo(ds.label);
+        return {
+            ...ds,
+            borderColor: brandColors[brandInfo.type] || '#6b7280',
+            backgroundColor: (brandColors[brandInfo.type] || '#6b7280') + '33',
+            tension: 0.2,
+            fill: true,
         }
-
-        function renderSocialBuzzChart(trendData) {
-            if (socialBuzzChart) {
-                socialBuzzChart.destroy();
-            }
-            const brandColors = {
-                my_brand: '#4f46e5',
-                direct: '#db2777',
-                indirect: '#f59e0b',
-                potential: '#10b981',
-            };
-            const datasets = trendData.datasets.map(ds => {
-                const brandInfo = findBrandInfo(ds.label);
-                return {
-                    ...ds,
-                    borderColor: brandColors[brandInfo.type] || '#6b7280',
-                    backgroundColor: (brandColors[brandInfo.type] || '#6b7280') + '33', // Add alpha for fill
-                    tension: 0.2,
-                    fill: true,
-                }
-            });
-
-            socialBuzzChart = new Chart(socialBuzzChartCanvas, {
-                type: 'line',
-                data: {
-                    labels: trendData.labels,
-                    datasets: datasets,
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: '社群聲量指數'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
+    });
+    socialBuzzChart = new Chart(socialBuzzChartCanvas, {
+        type: 'line',
+        data: {
+            labels: trendData.labels,
+            datasets: datasets,
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: '社群聲量指數'
                     }
                 }
-            });
-        }
-        
-        function renderComparisonTable(results) {
-            comparisonTable.innerHTML = ''; 
-
-            const analysisKeys = [
-                { key: 'productPositioning', label: '產品定位' },
-                { key: 'userNeeds', label: '用戶需求 (痛點/偏好)' },
-                { key: 'featureComparison', label: '功能對比 (優劣/創新)' },
-                { key: 'uiUxDesign', label: '界面與體驗設計' },
-                { key: 'copywritingStyle', label: '行銷文案風格' },
-                { key: 'visualStyle', label: '視覺設計風格' },
-                { key: 'revenueModel', label: '盈利模式' },
-                { key: 'marketingStrategy', label: '市場營銷策略' },
-                { key: 'userOps', label: '用戶運營策略' },
-            ];
-
-            const thead = document.createElement('thead');
-            let headerRow = '<tr class="table-sticky-header">';
-            headerRow += '<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">分析維度</th>';
-            results.forEach(brand => {
-                headerRow += `<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <div class="flex flex-col">
-                        <span class="text-base font-bold text-gray-800">${brand.brandName}</span>
-                        <span class="text-xs font-medium ${getCompetitorTypeColor(brand.competitorType)}">${formatCompetitorType(brand.competitorType)}</span>
-                    </div>
-                </th>`;
-            });
-            headerRow += '</tr>';
-            thead.innerHTML = headerRow;
-            comparisonTable.appendChild(thead);
-
-            const tbody = document.createElement('tbody');
-            tbody.className = "bg-white divide-y divide-gray-200";
-
-            analysisKeys.forEach(item => {
-                let row = '<tr>';
-                row += `<td class="px-6 py-4 whitespace-nowrap font-bold text-gray-900 align-top">${item.label}</td>`;
-                results.forEach(brand => {
-                    const analysisText = brand.analysis && brand.analysis[item.key] ? brand.analysis[item.key] : 'N/A';
-                    row += `<td class="px-6 py-4 whitespace-pre-wrap align-top">${analysisText}</td>`;
-                });
-                row += '</tr>';
-                tbody.innerHTML += row;
-            });
-            comparisonTable.appendChild(tbody);
-        }
-
-        function renderTimeline(events) {
-            timelineContainer.innerHTML = '';
-            if (!events || events.length === 0) {
-                timelineContainer.innerHTML = '<p class="text-gray-500 p-4">AI 未能找到相關的行銷活動。</p>';
-                return;
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
             }
-            events.forEach(event => {
-                const timelineItemClass = `timeline-item-${event.competitorType}`;
-                const categoryColor = getEventCategoryColor(event.category);
-                const isPredictedClass = event.isPredicted ? 'predicted-event' : '';
-                
-                const item = document.createElement('div');
-                item.className = `timeline-item relative mb-6 ${timelineItemClass}`;
-                item.innerHTML = `
-                    <div class="ml-10">
-                        <span class="absolute -left-10 text-sm font-semibold text-gray-500">${event.date}</span>
-                        <div class="p-4 bg-gray-50 rounded-lg border-2 ${isPredictedClass} border-gray-200">
-                           <div class="flex justify-between items-center mb-2">
-                               <span class="font-semibold px-2.5 py-0.5 rounded-full text-xs ${categoryColor.bg} ${categoryColor.text}">${event.category} ${event.isPredicted ? '(預測)' : ''}</span>
-                               <span class="font-bold text-sm ${getCompetitorTypeColor(event.competitorType)}">${event.brandName}</span>
-                           </div>
-                           <h3 class="text-lg font-bold text-gray-800">${event.title}</h3>
-                           <p class="text-gray-600 mt-1">${event.description}</p>
-                        </div>
-                    </div>
-                `;
-                timelineContainer.appendChild(item);
-            });
         }
+    });
+}
 
-        function renderAlerts(alerts) {
-            alertsContainer.innerHTML = '';
-            if (!alerts || alerts.length === 0) {
-                alertsContainer.innerHTML = '<p class="text-gray-500">目前無重大機會或威脅警報。</p>';
-                return;
-            }
-            alerts.forEach(alert => {
-                const isOpportunity = alert.type === 'opportunity';
-                const bgColor = isOpportunity ? 'bg-green-50' : 'bg-red-50';
-                const borderColor = isOpportunity ? 'border-green-500' : 'border-red-500';
-                const iconColor = isOpportunity ? 'text-green-500' : 'text-red-500';
-                const iconSvg = isOpportunity 
-                    ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2l4-4"></path></svg>`
-                    : `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
-                
-                const alertEl = document.createElement('div');
-                alertEl.className = `flex items-start p-4 rounded-lg border-l-4 ${bgColor} ${borderColor}`;
-                alertEl.innerHTML = `
-                    <div class="flex-shrink-0 ${iconColor}">${iconSvg}</div>
-                    <div class="ml-3">
-                        <p class="text-sm font-medium text-gray-800">${alert.text}</p>
-                    </div>
-                `;
-                alertsContainer.appendChild(alertEl);
-            });
-        }
-        
-        // Helper function to find brand info for coloring chart
-        function findBrandInfo(brandName) {
-            if (brandName === myBrandInput.value.trim()) {
-                return { type: 'my_brand' };
-            }
-            const competitorEl = Array.from(competitorList.children).find(div => div.querySelector('input').value.trim() === brandName);
-            return competitorEl ? { type: competitorEl.querySelector('select').value } : { type: 'direct' };
-        }
+function renderComparisonTable(results) {
+    comparisonTable.innerHTML = '';
+    if (!Array.isArray(results) || !results.length) {
+        comparisonTable.innerHTML = '<tr><td class="p-4 text-gray-500">無法取得競品比較資料。</td></tr>';
+        return;
+    }
+    const analysisKeys = [
+        { key: 'productPositioning', label: '產品定位' },
+        { key: 'userNeeds', label: '用戶需求 (痛點/偏好)' },
+        { key: 'featureComparison', label: '功能對比 (優劣/創新)' },
+        { key: 'uiUxDesign', label: '界面與體驗設計' },
+        { key: 'copywritingStyle', label: '行銷文案風格' },
+        { key: 'visualStyle', label: '視覺設計風格' },
+        { key: 'revenueModel', label: '盈利模式' },
+        { key: 'marketingStrategy', label: '市場營銷策略' },
+        { key: 'userOps', label: '用戶運營策略' },
+    ];
+    const thead = document.createElement('thead');
+    let headerRow = '<tr class="table-sticky-header">';
+    headerRow += '<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">分析維度</th>';
+    results.forEach(brand => {
+        headerRow += `<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <div class="flex flex-col">
+                <span class="text-base font-bold text-gray-800">${brand.brandName}</span>
+                <span class="text-xs font-medium ${getCompetitorTypeColor(brand.competitorType)}">${formatCompetitorType(brand.competitorType)}</span>
+            </div>
+        </th>`;
+    });
+    headerRow += '</tr>';
+    thead.innerHTML = headerRow;
+    comparisonTable.appendChild(thead);
+    const tbody = document.createElement('tbody');
+    tbody.className = "bg-white divide-y divide-gray-200";
+    analysisKeys.forEach(item => {
+        let row = '<tr>';
+        row += `<td class="px-6 py-4 whitespace-nowrap font-bold text-gray-900 align-top">${item.label}</td>`;
+        results.forEach(brand => {
+            const analysisText = brand.analysis && brand.analysis[item.key] ? brand.analysis[item.key] : 'N/A';
+            row += `<td class="px-6 py-4 whitespace-pre-wrap align-top">${analysisText}</td>`;
+        });
+        row += '</tr>';
+        tbody.innerHTML += row;
+    });
+    comparisonTable.appendChild(tbody);
+}
 
-        function getEventCategoryColor(category) {
-            const colors = {
-                "產品發布": { bg: "bg-blue-100", text: "text-blue-800" },
-                "社群活動": { bg: "bg-pink-100", text: "text-pink-800" },
-                "代言人合作": { bg: "bg-purple-100", text: "text-purple-800" },
-                "公關危機": { bg: "bg-red-100", text: "text-red-800" },
-                "節日行銷": { bg: "bg-green-100", text: "text-green-800" },
-                "線下活動": { bg: "bg-yellow-100", text: "text-yellow-800" },
-                "default": { bg: "bg-gray-100", text: "text-gray-800" }
-            };
-            return colors[category] || colors["default"];
-        }
+// 這裡是「只顯示最近一年內的資料」的新 renderTimeline 實作
+function renderTimeline(events) {
+    timelineContainer.innerHTML = '';
+    if (!events || events.length === 0) {
+        timelineContainer.innerHTML = '<p class="text-gray-500 p-4">AI 未能找到相關的行銷活動。</p>';
+        return;
+    }
 
-        function getCompetitorTypeColor(type) {
-            const colors = {
-                my_brand: 'text-indigo-600',
-                direct: 'text-red-600',
-                indirect: 'text-yellow-600',
-                potential: 'text-green-600'
-            };
-            return colors[type] || 'text-gray-500';
-        }
-        
-        function formatCompetitorType(type) {
-            const labels = {
-                my_brand: '我方品牌',
-                direct: '直接競品',
-                indirect: '間接競品',
-                potential: '潛在競品'
-            };
-            return labels[type] || type;
-        }
-        
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.classList.remove('hidden');
-        }
+    // 新增：只顯示最近一年內的事件
+    const now = new Date();
+    const oneYearAgo = new Date(now);
+    oneYearAgo.setFullYear(now.getFullYear() - 1);
 
-    </script>
+    const filteredEvents = events.filter(event => {
+        const eventDate = new Date(event.date);
+        return eventDate >= oneYearAgo && eventDate <= now;
+    });
 
+    if (filteredEvents.length === 0) {
+        timelineContainer.innerHTML = '<p class="text-gray-500 p-4">最近一年內無相關行銷活動。</p>';
+        return;
+    }
+
+    filteredEvents.forEach(event => {
+        const timelineItemClass = `timeline-item-${event.competitorType}`;
+        const categoryColor = getEventCategoryColor(event.category);
+        const isPredictedClass = event.isPredicted ? 'predicted-event' : '';
+        const item = document.createElement('div');
+        item.className = `timeline-item relative mb-6 ${timelineItemClass}`;
+        item.innerHTML = `
+            <div class="ml-10">
+                <span class="absolute -left-10 text-sm font-semibold text-gray-500">${event.date}</span>
+                <div class="p-4 bg-gray-50 rounded-lg border-2 ${isPredictedClass} border-gray-200">
+                   <div class="flex justify-between items-center mb-2">
+                       <span class="font-semibold px-2.5 py-0.5 rounded-full text-xs ${categoryColor.bg} ${categoryColor.text}">${event.category} ${event.isPredicted ? '(預測)' : ''}</span>
+                       <span class="font-bold text-sm ${getCompetitorTypeColor(event.competitorType)}">${event.brandName}</span>
+                   </div>
+                   <h3 class="text-lg font-bold text-gray-800">${event.title}</h3>
+                   <p class="text-gray-600 mt-1">${event.description}</p>
+                </div>
+            </div>
+        `;
+        timelineContainer.appendChild(item);
+    });
+}
+
+function renderAlerts(alerts) {
+    alertsContainer.innerHTML = '';
+    if (!alerts || alerts.length === 0) {
+        alertsContainer.innerHTML = '<p class="text-gray-500">目前無重大機會或威脅警報。</p>';
+        return;
+    }
+    alerts.forEach(alert => {
+        const isOpportunity = alert.type === 'opportunity';
+        const bgColor = isOpportunity ? 'bg-green-50' : 'bg-red-50';
+        const borderColor = isOpportunity ? 'border-green-500' : 'border-red-500';
+        const iconColor = isOpportunity ? 'text-green-500' : 'text-red-500';
+        const iconSvg = isOpportunity 
+            ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m4 0h-1a1 1 0 01-1-1v-1a1 1 0 00-1-1h-1a1 1 0 01-1-1V9a1 1 0 011-1h1a1 1 0 011 1v1a1 1 0 001 1h1a1 1 0 011 1v1a1 1 0 01-1 1z"/></svg>`
+            : `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>`;
+        const alertEl = document.createElement('div');
+        alertEl.className = `flex items-start p-4 rounded-lg border-l-4 ${bgColor} ${borderColor}`;
+        alertEl.innerHTML = `
+            <div class="flex-shrink-0 ${iconColor}">${iconSvg}</div>
+            <div class="ml-3">
+                <p class="text-sm font-medium text-gray-800">${alert.text}</p>
+            </div>
+        `;
+        alertsContainer.appendChild(alertEl);
+    });
+}
+
+function findBrandInfo(brandName) {
+    if (brandName === myBrandInput.value.trim()) {
+        return { type: 'my_brand' };
+    }
+    const competitorEl = Array.from(competitorList.children).find(div => div.querySelector('input').value.trim() === brandName);
+    return competitorEl ? { type: competitorEl.querySelector('select').value } : { type: 'direct' };
+}
+
+function getEventCategoryColor(category) {
+    const colors = {
+        "產品發布": { bg: "bg-blue-100", text: "text-blue-800" },
+        "社群活動": { bg: "bg-pink-100", text: "text-pink-800" },
+        "代言人合作": { bg: "bg-purple-100", text: "text-purple-800" },
+        "公關危機": { bg: "bg-red-100", text: "text-red-800" },
+        "節日行銷": { bg: "bg-green-100", text: "text-green-800" },
+        "線下活動": { bg: "bg-yellow-100", text: "text-yellow-800" },
+        "default": { bg: "bg-gray-100", text: "text-gray-800" }
+    };
+    return colors[category] || colors["default"];
+}
+
+function getCompetitorTypeColor(type) {
+    const colors = {
+        my_brand: 'text-indigo-600',
+        direct: 'text-red-600',
+        indirect: 'text-yellow-600',
+        potential: 'text-green-600'
+    };
+    return colors[type] || 'text-gray-500';
+}
+
+function formatCompetitorType(type) {
+    const labels = {
+        my_brand: '我方品牌',
+        direct: '直接競品',
+        indirect: '間接競品',
+        potential: '潛在競品'
+    };
+    return labels[type] || type;
+}
+
+function showError(message) {
+    errorMessage.textContent = message;
+    errorMessage.classList.remove('hidden');
+}
+</script>
 </body>
 </html>
