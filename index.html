@@ -315,7 +315,7 @@ async function fetchAndAnalyzeData(myBrand, competitors) {
 
     const apiKey = localStorage.getItem('gemini_api_key') || '';
     if (!apiKey) throw new Error('請先輸入並儲存 Google Gemini API Key');
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.0-pro:generateContent?key=${apiKey}`;
 
     const response = await fetch(apiUrl, {
         method: 'POST',
