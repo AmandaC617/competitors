@@ -153,8 +153,9 @@
                 </div>
                 <div class="bg-white rounded-xl shadow-lg overflow-x-auto">
                     <h2 class="text-2xl font-bold text-gray-800 p-6">競品比較矩陣</h2>
-                    <table id="comparison-table" class="min-w-full text-sm text-left"></table>
+                <table id="comparison-table" class="min-w-full text-sm text-left"></table>
                     <div id="comparison-sources" class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 hidden"></div>
+                    <div id="public-info-sources" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 hidden"></div>
                 </div>
                 <div class="bg-white rounded-xl shadow-lg">
                     <h2 class="text-2xl font-bold text-gray-800 p-6">整合行銷活動時間軸</h2>
@@ -568,6 +569,31 @@ function renderComparisonTable(results) {
             ]
         },
     ];
+const publicInfoSourcesData = [
+    {
+        title: '競品公開資訊',
+        description: '以公開管道驗證功能與品牌聲量',
+        borderClass: 'border-slate-200',
+        bgClass: 'bg-white',
+        items: [
+            {
+                label: '官網與產品頁',
+                note: '檢視功能描述、定價、通路佈局、在地化訊息。',
+                tooltip: '可加入章節連結或快照，對應「功能」「體驗」「定價/通路」欄位。'
+            },
+            {
+                label: 'App/Platform 評分',
+                note: 'App Store、Google Play、SaaS 評價可說明 UI 流暢度與信任感。',
+                tooltip: '實際分數、更新頻率、熱門評論可驗證「體驗」與「品牌信任度」。'
+            },
+            {
+                label: '新聞與媒體報導',
+                note: '觀察品牌曝光、正負聲量、危機事件與合作消息。',
+                tooltip: '能補強「品牌聲譽」「負面訊息」對資源與策略的影響評估。'
+            }
+        ]
+    }
+];
     const thead = document.createElement('thead');
     let headerRow = '<tr class="table-sticky-header">';
     headerRow += '<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">分析維度</th>';
@@ -632,6 +658,29 @@ function renderComparisonSources() {
                             <p class="font-medium text-gray-800">${source.label}</p>
                             <p class="text-gray-500">${source.note}</p>
                         </div>
+                    </li>
+                `).join('')}
+            </ul>
+        </div>
+    `).join('');
+    container.classList.remove('hidden');
+    renderPublicInfoSources();
+}
+
+function renderPublicInfoSources() {
+    const container = document.getElementById('public-info-sources');
+    if (!container) return;
+    container.innerHTML = publicInfoSourcesData.map(group => `
+        <div class="rounded-2xl border ${group.borderClass} ${group.bgClass} p-5 shadow-sm">
+            <div class="flex items-center justify-between">
+                <h3 class="text-sm font-semibold text-gray-800">${group.title}</h3>
+            </div>
+            <p class="text-xs text-gray-500 mb-3">${group.description}</p>
+            <ul class="space-y-3 text-sm">
+                ${group.items.map(item => `
+                    <li class="text-gray-700" title="${item.tooltip}">
+                        <p class="font-semibold">${item.label}</p>
+                        <p class="text-xs text-gray-500">${item.note}</p>
                     </li>
                 `).join('')}
             </ul>
