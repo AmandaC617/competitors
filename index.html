@@ -128,6 +128,22 @@
                     </span>
                 </button>
             </div>
+        <div id="market-focus-card" class="bg-white border border-dashed border-indigo-100 rounded-xl p-6 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <p class="text-sm font-semibold text-indigo-600 uppercase tracking-wider">市場聚焦</p>
+                <p class="text-lg font-bold text-gray-900">目前預設：<span id="market-region-label" class="text-indigo-700">台灣</span></p>
+                <p class="text-sm text-gray-500">這會影響 AI 盈利/行銷比較角度與社群聲量地區篩選。</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <label for="market-select" class="text-sm font-medium text-gray-700">切換市場</label>
+                <select id="market-select" class="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-400">
+                    <option value="台灣" selected>台灣</option>
+                    <option value="東南亞">東南亞</option>
+                    <option value="日本">日本</option>
+                    <option value="美國">美國</option>
+                </select>
+            </div>
+        </div>
             <div id="downloadable-content" class="space-y-8">
                 <div class="bg-white rounded-xl shadow-lg">
                     <h2 class="text-2xl font-bold text-gray-800 p-6">社群聲量趨勢圖</h2>
@@ -138,6 +154,7 @@
                 <div class="bg-white rounded-xl shadow-lg overflow-x-auto">
                     <h2 class="text-2xl font-bold text-gray-800 p-6">競品比較矩陣</h2>
                     <table id="comparison-table" class="min-w-full text-sm text-left"></table>
+                    <div id="comparison-sources" class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 hidden"></div>
                 </div>
                 <div class="bg-white rounded-xl shadow-lg">
                     <h2 class="text-2xl font-bold text-gray-800 p-6">整合行銷活動時間軸</h2>
@@ -179,8 +196,45 @@ const downloadBtn = document.getElementById('download-btn');
 const apiKeyInput = document.getElementById('api-key-input');
 const saveApiKeyBtn = document.getElementById('save-api-key-btn');
 const apiKeyStatus = document.getElementById('api-key-status');
+const marketSelect = document.getElementById('market-select');
+const marketRegionLabel = document.getElementById('market-region-label');
 
 let socialBuzzChart = null;
+const comparisonSourcesData = [
+    {
+        title: '核心體驗',
+        description: '產品與價值面對比',
+        borderClass: 'border-indigo-200',
+        bgClass: 'bg-indigo-50',
+        sources: [
+            { label: '內部品牌/產品說明', note: '產品定位、價值主張', tooltip: '策略/PRD 文件、內部 USP 簡報' },
+            { label: '競品官網與產品頁', note: '功能/體驗差異', tooltip: '可直接比對功能清單與 UI' },
+            { label: 'AI 專家比較文本', note: 'Gemini JSON 分析內容', tooltip: '會從 prompt 指令補出各項觀察' },
+        ]
+    },
+    {
+        title: '市場 / 行銷',
+        description: '通路、定價與社群節奏',
+        borderClass: 'border-amber-200',
+        bgClass: 'bg-amber-50',
+        sources: [
+            { label: '公開定價與促案', note: '官網、報價單', tooltip: '包含套餐、免費試用、訂閱/一次性策略' },
+            { label: '社群監測報表', note: '聲量高峰與話題', tooltip: '可接 Brand24、Mention、社群 API 導出' },
+            { label: 'Media/PR 報導', note: '品牌聲譽與活動', tooltip: '涵蓋 KOL/合作曝光與重大行銷節奏' },
+        ]
+    },
+    {
+        title: '資源能力 / 策略彈性',
+        description: '組織資源與信任基礎',
+        borderClass: 'border-emerald-200',
+        bgClass: 'bg-emerald-50',
+        sources: [
+            { label: '公開財報/募資公告', note: '資金與研發投入', tooltip: '用於推估資源強度與研發速度' },
+            { label: '合作/代理網絡', note: '通路與客服', tooltip: '包含線下代理、客服與物流能力' },
+            { label: 'AI 自動化/人員佈局', note: '行銷/運營隊伍', tooltip: '可用 LinkedIn、Press 釋出資料佐證' },
+        ]
+    }
+];
 
 apiKeyInput.value = localStorage.getItem('gemini_api_key') || '';
 saveApiKeyBtn.addEventListener('click', () => {
@@ -197,6 +251,13 @@ analyzeBtn.addEventListener('click', handleAnalysis);
 downloadBtn.addEventListener('click', downloadReport);
 
 addCompetitorField();
+
+if (marketSelect && marketRegionLabel) {
+    marketRegionLabel.textContent = marketSelect.value;
+    marketSelect.addEventListener('change', () => {
+        marketRegionLabel.textContent = marketSelect.value;
+    });
+}
 
 function addCompetitorField() {
     const newField = document.createElement('div');
@@ -472,16 +533,40 @@ function renderComparisonTable(results) {
         comparisonTable.innerHTML = '<tr><td class="p-4 text-gray-500">無法取得競品比較資料。</td></tr>';
         return;
     }
-    const analysisKeys = [
-        { key: 'productPositioning', label: '產品定位' },
-        { key: 'userNeeds', label: '用戶需求 (痛點/偏好)' },
-        { key: 'featureComparison', label: '功能對比 (優劣/創新)' },
-        { key: 'uiUxDesign', label: '界面與體驗設計' },
-        { key: 'copywritingStyle', label: '行銷文案風格' },
-        { key: 'visualStyle', label: '視覺設計風格' },
-        { key: 'revenueModel', label: '盈利模式' },
-        { key: 'marketingStrategy', label: '市場營銷策略' },
-        { key: 'userOps', label: '用戶運營策略' },
+    const analysisGroups = [
+        {
+            title: '核心體驗',
+            description: '產品、價值與體驗',
+            bgClass: 'bg-indigo-50',
+            textClass: 'text-indigo-700',
+            fields: [
+                { key: 'productPositioning', label: '產品定位' },
+                { key: 'userNeeds', label: '用戶需求 (痛點/偏好)' },
+                { key: 'featureComparison', label: '功能對比 (優劣/創新)' },
+                { key: 'uiUxDesign', label: '界面與體驗設計' },
+            ]
+        },
+        {
+            title: '市場 / 行銷',
+            description: '定價、通路與行銷節奏',
+            bgClass: 'bg-amber-50',
+            textClass: 'text-amber-700',
+            fields: [
+                { key: 'copywritingStyle', label: '行銷文案風格與語調' },
+                { key: 'visualStyle', label: '視覺設計與品牌感' },
+                { key: 'revenueModel', label: '盈利模式與定價帶' },
+                { key: 'marketingStrategy', label: '市場營銷與通路策略' },
+            ]
+        },
+        {
+            title: '資源能力 / 策略彈性',
+            description: '用戶運營、組織與信任',
+            bgClass: 'bg-emerald-50',
+            textClass: 'text-emerald-700',
+            fields: [
+                { key: 'userOps', label: '用戶運營策略與資源' },
+            ]
+        },
     ];
     const thead = document.createElement('thead');
     let headerRow = '<tr class="table-sticky-header">';
@@ -499,17 +584,60 @@ function renderComparisonTable(results) {
     comparisonTable.appendChild(thead);
     const tbody = document.createElement('tbody');
     tbody.className = "bg-white divide-y divide-gray-200";
-    analysisKeys.forEach(item => {
-        let row = '<tr>';
-        row += `<td class="px-6 py-4 whitespace-nowrap font-bold text-gray-900 align-top">${item.label}</td>`;
-        results.forEach(brand => {
-            const analysisText = brand.analysis && brand.analysis[item.key] ? brand.analysis[item.key] : 'N/A';
-            row += `<td class="px-6 py-4 whitespace-pre-wrap align-top">${analysisText}</td>`;
+    analysisGroups.forEach(group => {
+        const groupRow = document.createElement('tr');
+        groupRow.className = `${group.bgClass} border-t border-gray-200`;
+        const groupCell = document.createElement('td');
+        groupCell.colSpan = results.length + 1;
+        groupCell.className = `px-6 py-2 text-sm font-semibold ${group.textClass}`;
+        groupCell.innerHTML = `
+            <span class="uppercase tracking-wider">${group.title}</span>
+            <span class="ml-3 text-xs font-normal text-gray-600">${group.description}</span>
+        `;
+        groupRow.appendChild(groupCell);
+        tbody.appendChild(groupRow);
+
+        group.fields.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td class="px-6 py-4 whitespace-nowrap font-bold text-gray-900 align-top">${item.label}</td>`;
+            results.forEach(brand => {
+                const analysisText = brand.analysis && brand.analysis[item.key] ? brand.analysis[item.key] : 'N/A';
+                const cell = document.createElement('td');
+                cell.className = 'px-6 py-4 whitespace-pre-wrap align-top';
+                cell.textContent = analysisText;
+                row.appendChild(cell);
+            });
+            tbody.appendChild(row);
         });
-        row += '</tr>';
-        tbody.innerHTML += row;
     });
     comparisonTable.appendChild(tbody);
+    renderComparisonSources();
+}
+
+function renderComparisonSources() {
+    const container = document.getElementById('comparison-sources');
+    if (!container) return;
+    container.innerHTML = comparisonSourcesData.map(group => `
+        <div class="rounded-xl border ${group.borderClass} ${group.bgClass} p-4 shadow-sm">
+            <div class="flex items-center justify-between">
+                <h3 class="text-sm font-semibold text-gray-800">${group.title}</h3>
+                <span class="text-xs uppercase tracking-wider text-gray-500">來源</span>
+            </div>
+            <p class="text-xs text-gray-600 mb-3">${group.description}</p>
+            <ul class="text-xs space-y-1">
+                ${group.sources.map(source => `
+                    <li class="flex items-start gap-2" title="${source.tooltip}">
+                        <span class="text-indigo-600 text-sm">•</span>
+                        <div>
+                            <p class="font-medium text-gray-800">${source.label}</p>
+                            <p class="text-gray-500">${source.note}</p>
+                        </div>
+                    </li>
+                `).join('')}
+            </ul>
+        </div>
+    `).join('');
+    container.classList.remove('hidden');
 }
 
 function renderTimeline(events) {
