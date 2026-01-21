@@ -77,11 +77,54 @@
         </header>
 
         <div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-lg mb-8">
+            <div id="market-focus-card" class="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 rounded-xl p-6 shadow-sm mb-6">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <p class="text-sm font-semibold text-indigo-600 uppercase tracking-wider mb-1">市場聚焦</p>
+                        <p class="text-lg font-bold text-gray-900">目前預設：<span id="market-region-label" class="text-indigo-700">台灣</span></p>
+                        <p id="market-hint-text" class="text-sm text-gray-600 mt-1">這會影響 AI 分析角度、語言建議、商業模式比對與社群聲量地區篩選。</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <label for="market-select" class="text-sm font-medium text-gray-700">切換市場</label>
+                        <select id="market-select" class="px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-400 bg-white">
+                            <option value="台灣" selected>台灣</option>
+                            <option value="東南亞">東南亞</option>
+                            <option value="日本">日本</option>
+                            <option value="美國">美國</option>
+                            <option value="歐洲">歐洲</option>
+                            <option value="中國">中國</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                 <div class="space-y-4">
                     <div>
                         <label for="my-brand-input" class="block text-sm font-medium text-gray-700 mb-1">您的品牌</label>
                         <input type="text" id="my-brand-input" class="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" />
+                    </div>
+                    <div>
+                        <label for="industry-select" class="block text-sm font-medium text-gray-700 mb-1">行業類別</label>
+                        <select id="industry-select" class="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                            <option value="">請選擇行業</option>
+                            <option value="科技/軟體">科技/軟體</option>
+                            <option value="電子商務/零售">電子商務/零售</option>
+                            <option value="金融科技">金融科技</option>
+                            <option value="醫療/健康">醫療/健康</option>
+                            <option value="教育科技">教育科技</option>
+                            <option value="製造業/B2B">製造業/B2B</option>
+                            <option value="餐飲/食品">餐飲/食品</option>
+                            <option value="時尚/美妝">時尚/美妝</option>
+                            <option value="旅遊/住宿">旅遊/住宿</option>
+                            <option value="媒體/娛樂">媒體/娛樂</option>
+                            <option value="房地產">房地產</option>
+                            <option value="能源/環保">能源/環保</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="product-description-input" class="block text-sm font-medium text-gray-700 mb-1">產品/服務描述（請詳細說明）</label>
+                        <textarea id="product-description-input" rows="3" class="w-full px-4 py-2 text-base border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="請詳細描述您的產品或服務，包括核心功能、目標用戶、使用場景等"></textarea>
                     </div>
                     <div>
                         <label for="my-goal-input" class="block text-sm font-medium text-gray-700 mb-1">本季行銷目標</label>
@@ -136,22 +179,6 @@
                 </button>
             </div>
         </div>
-        <div id="market-focus-card" class="bg-white border border-dashed border-indigo-100 rounded-xl p-6 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-                <p class="text-sm font-semibold text-indigo-600 uppercase tracking-wider">市場聚焦</p>
-                <p class="text-lg font-bold text-gray-900">目前預設：<span id="market-region-label" class="text-indigo-700">台灣</span></p>
-                <p id="market-hint-text" class="text-sm text-gray-500">這會影響 AI 盈利/行銷比較角度與社群聲量地區篩選。</p>
-            </div>
-            <div class="flex items-center gap-3">
-                <label for="market-select" class="text-sm font-medium text-gray-700">切換市場</label>
-                <select id="market-select" class="px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-400">
-                    <option value="台灣" selected>台灣</option>
-                    <option value="東南亞">東南亞</option>
-                    <option value="日本">日本</option>
-                    <option value="美國">美國</option>
-                </select>
-            </div>
-        </div>
             <div id="downloadable-content" class="space-y-8">
                 <div class="bg-white rounded-xl shadow-lg">
                     <h2 class="text-2xl font-bold text-gray-800 p-6">社群聲量趨勢圖</h2>
@@ -182,6 +209,38 @@
                 <div class="bg-white rounded-xl shadow-lg">
                     <h2 class="text-2xl font-bold text-gray-800 p-6">機會與威脅警報</h2>
                     <div id="alerts-container" class="px-6 pb-6 space-y-4"></div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 p-6">7維度 AIO 品牌感知系統 (GEO戰略)</h2>
+                    <div id="aio-awareness-container" class="px-6 pb-6 space-y-4"></div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 p-6">快速情緒脈動監測</h2>
+                    <div id="sentiment-pulse-container" class="px-6 pb-6 space-y-4"></div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 p-6">QDAC 決策框架</h2>
+                    <div id="qdac-framework-container" class="px-6 pb-6 space-y-4"></div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 p-6">市場進入策略分析</h2>
+                    <div id="market-entry-container" class="px-6 pb-6 space-y-4"></div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 p-6">行業完整性分析</h2>
+                    <div id="industry-analysis-container" class="px-6 pb-6 space-y-4"></div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 p-6">產品描述明確化</h2>
+                    <div id="product-clarification-container" class="px-6 pb-6 space-y-4"></div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 p-6">語言本地化建議</h2>
+                    <div id="language-recommendations-container" class="px-6 pb-6 space-y-4"></div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 p-6">當地市場商業模式比對</h2>
+                    <div id="local-business-model-container" class="px-6 pb-6 space-y-4"></div>
                 </div>
                 <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
                     <h2 class="text-2xl font-bold mb-4 text-gray-800">
@@ -224,6 +283,8 @@
 
 <script type="module">
 const myBrandInput = document.getElementById('my-brand-input');
+const industrySelect = document.getElementById('industry-select');
+const productDescriptionInput = document.getElementById('product-description-input');
 const myGoalInput = document.getElementById('my-goal-input');
 const myPersonaInput = document.getElementById('my-persona-input');
 const competitorList = document.getElementById('competitor-list');
@@ -372,6 +433,8 @@ function addCompetitorField(initialData = {}) {
 async function handleAnalysis() {
     const myBrand = {
         name: myBrandInput.value.trim(),
+        industry: industrySelect.value.trim(),
+        productDescription: productDescriptionInput.value.trim(),
         goal: myGoalInput.value.trim(),
         persona: myPersonaInput.value.trim(),
     };
@@ -382,6 +445,14 @@ async function handleAnalysis() {
 
     if (!myBrand.name || competitors.length === 0) {
         showError('請輸入您的品牌，並至少新增一個有效的競品。');
+        return;
+    }
+    if (!myBrand.industry) {
+        showError('請選擇行業類別。');
+        return;
+    }
+    if (!myBrand.productDescription) {
+        showError('請詳細描述您的產品或服務。');
         return;
     }
 
@@ -399,9 +470,19 @@ async function handleAnalysis() {
             region
         };
         const analysisData = await fetchAndAnalyzeData(myBrand, competitors, region);
-        if (!analysisData || !analysisData.analysisResults || !analysisData.aiStrategicAnalysis || !analysisData.combinedTimeline || !analysisData.socialBuzzTrend || !analysisData.alerts) {
+        if (!analysisData || !analysisData.analysisResults || !analysisData.aiStrategicAnalysis) {
             throw new Error('AI 回應資料結構不完整，無法進行分析。');
         }
+        if (!analysisData.combinedTimeline) analysisData.combinedTimeline = [];
+        if (!analysisData.socialBuzzTrend) analysisData.socialBuzzTrend = { labels: [], datasets: [] };
+        if (!analysisData.alerts) analysisData.alerts = [];
+        if (!analysisData.rapidSentimentPulse) analysisData.rapidSentimentPulse = null;
+        if (!analysisData.qdacFramework) analysisData.qdacFramework = null;
+        if (!analysisData.marketEntryStrategy) analysisData.marketEntryStrategy = null;
+        if (!analysisData.industryAnalysis) analysisData.industryAnalysis = null;
+        if (!analysisData.productClarification) analysisData.productClarification = null;
+        if (!analysisData.languageRecommendations) analysisData.languageRecommendations = null;
+        if (!analysisData.localBusinessModelComparison) analysisData.localBusinessModelComparison = null;
         lastAnalysisData = analysisData;
         renderResults(analysisData);
         resultsContainer.classList.remove('hidden');
@@ -418,52 +499,154 @@ async function handleAnalysis() {
 async function fetchAndAnalyzeData(myBrand, competitors, region = '台灣') {
     const competitorsString = competitors.map(c => `「${c.name}」(${c.type}競品)`).join('、');
     const prompt = `
-作為一名頂尖的市場策略顧問，請以 ${region} 市場的文化與競爭脈絡為背景，對品牌「${myBrand.name}」(我方品牌) 與其競爭對手 ${competitorsString} 進行深度、全面的比較分析，並基於你的廣泛資料庫和專家知識，產出專業、具洞察力且具結構性的策略建議。請針對每個品牌逐一評析產品定位、用戶需求、功能優勢、UI/UX、行銷文案、視覺風格、商業模式、行銷策略、用戶運營等面向，並整合產生一份整體策略洞察，同時：
-1. 對於每個分析維度提供「來源文字」（來源可包含官網、報導、社群聲量、AI 推論等），串成 'analysisSources' object。
-2. 附上該維度的 'quantifiedMetrics'，例如更新頻率、社群聲量段落、App 評分等。
-3. 用 'regionTag' 標註這份分析是針對哪個市場。
+作為一名頂尖的市場策略顧問與決策智能專家，請以 ${region} 市場的文化與競爭脈絡為背景，對品牌「${myBrand.name}」(我方品牌，行業：${myBrand.industry || '未指定'}，產品描述：${myBrand.productDescription || '未提供'}) 與其競爭對手 ${competitorsString} 進行深度、全面的戰略分析。本分析需採用「10維度競爭者矩陣」框架，並整合「7維度AIO品牌感知系統（GEO戰略）」、「快速情緒脈動監測」與「市場進入策略評估」。
+
+【重要分析要求】：
+1. **行業完整性分析**：請針對「${myBrand.industry}」行業進行完整的市場結構分析，包括行業標準、主要玩家、進入門檻、監管環境等。
+2. **產品描述明確化**：基於「${myBrand.productDescription}」，請明確分析產品的核心價值主張、功能特色、目標用戶群體、使用場景，並與競品進行詳細對比。
+3. **語言相關建議**：針對 ${region} 市場，請提供語言本地化建議，包括：
+   - 適合的語言版本（如繁體中文、簡體中文、日語、英語、東南亞各國語言等）
+   - 關鍵詞與術語的本地化翻譯建議
+   - 文化敏感度與語言習慣考量
+   - SEO/GEO 關鍵詞策略建議
+4. **當地市場商業模式比對**：請深入分析 ${region} 市場的商業模式特點，包括：
+   - 當地消費習慣與支付偏好
+   - 通路結構與分銷模式
+   - 定價策略與促銷習慣
+   - 法規與合規要求
+   - 競爭對手的商業模式在當地市場的適應性
+   - 我方品牌商業模式在當地市場的優劣勢
+
+請針對每個品牌進行以下分析：
+
+【10維度競爭者矩陣】（每個維度請提供0-10分評分、分析文字、資料來源與量化指標）：
+1. 產品特徵密度 (Product Feature Density)：產品線廣度與深度、解決痛點覆蓋率
+2. 價格定位彈性 (Price Positioning Elasticity)：定價策略結構、折扣頻率、利潤結構
+3. 數位權威與足跡 (Digital Authority & Footprint)：網域權重、反向連結、關鍵字覆蓋
+4. 社群互動速率 (Social Engagement Velocity)：每千名粉絲的活躍互動比率、內容傳播速度
+5. 客戶情緒極性 (Customer Sentiment Polarity)：正負面情緒淨值、情緒觸發點分析
+6. 通路網絡廣度 (Distribution Network Breadth)：線上電商平台覆蓋率、線下實體通路滲透率
+7. 創新節奏 (Innovation Cadence)：新產品/專利/功能更新頻率
+8. 永續與企業社會責任 (Sustainability & CSR Profile)：ESG承諾與實踐
+9. 客戶支援響應度 (Customer Support Responsiveness)：各接觸點回應速度與解決能力
+10. 品牌敘事一致性 (Brand Narrative Consistency)：跨市場、跨通路訊息統一性
+
+【7維度AIO品牌感知系統】（針對生成式引擎優化GEO）：
+1. 提及聲量 (Mention Volume / AI Signal Rate)：AI生成回應中品牌出現頻率
+2. 生成式佔有率 (Generative Share of Voice, G-SoV)：在所有競品提及中本品牌佔比
+3. 排名與位序 (Rank & Positioning)：AI列表式回答中的順位
+4. 提及情緒 (Sentiment of Mention)：AI提及品牌時的形容詞與語境情緒
+5. 實體關聯強度 (Entity Association Strength)：品牌與關鍵概念（創新/環保/低價等）連結緊密度
+6. 引用準確性與信任度 (Citation Accuracy & Trust)：AI生成資訊的正確性與可信度
+7. 推薦強度 (Recommendation Intensity)：被動提及 vs 主動推薦的區分
+
+【快速情緒脈動監測】：
+- 整體情緒淨值（正負面比例）
+- 主題建模分析（產品/服務/行銷情緒分離）
+- 情緒觸發點識別
+- 異常波動檢測（尖峰預警）
+
+【市場進入策略評估】：
+- 市場機會識別（白色空間）
+- 不對稱優勢分析
+- 進入路徑建議（D2C/通路/合作夥伴）
+- 風險評估與緩解策略
+
+同時請提供：
+1. 每個分析維度的「來源文字」（官網、報導、社群聲量、AI推論等），串成 'analysisSources' object
+2. 該維度的 'quantifiedMetrics'（更新頻率、社群聲量、App評分、價格數據等）
+3. 用 'regionTag' 標註這份分析針對的市場
 請嚴格只輸出**純 JSON 結構**（不要加任何說明、註解、也不要用 markdown code block），內容如下：
 {
     "analysisResults": [
         {
             "brandName": "...",
             "competitorType": "...",
-            "analysis": {
-                "productPositioning": "...",
-                "userNeeds": "...",
-                "featureComparison": "...",
-                "uiUxDesign": "...",
-                "copywritingStyle": "...",
-                "visualStyle": "...",
-                "revenueModel": "...",
-                "marketingStrategy": "...",
-                "userOps": "..."
+            "tenDimensionMatrix": {
+                "productFeatureDensity": { "score": 0-10, "analysis": "...", "source": "...", "metrics": {} },
+                "pricePositioningElasticity": { "score": 0-10, "analysis": "...", "source": "...", "metrics": {} },
+                "digitalAuthorityFootprint": { "score": 0-10, "analysis": "...", "source": "...", "metrics": {} },
+                "socialEngagementVelocity": { "score": 0-10, "analysis": "...", "source": "...", "metrics": {} },
+                "customerSentimentPolarity": { "score": 0-10, "analysis": "...", "source": "...", "metrics": {} },
+                "distributionNetworkBreadth": { "score": 0-10, "analysis": "...", "source": "...", "metrics": {} },
+                "innovationCadence": { "score": 0-10, "analysis": "...", "source": "...", "metrics": {} },
+                "sustainabilityCSR": { "score": 0-10, "analysis": "...", "source": "...", "metrics": {} },
+                "customerSupportResponsiveness": { "score": 0-10, "analysis": "...", "source": "...", "metrics": {} },
+                "brandNarrativeConsistency": { "score": 0-10, "analysis": "...", "source": "...", "metrics": {} }
             },
-            "analysisSources": {
-                "productPositioning": "...",
-                "userNeeds": "...",
-                "featureComparison": "...",
-                "uiUxDesign": "...",
-                "copywritingStyle": "...",
-                "visualStyle": "...",
-                "revenueModel": "...",
-                "marketingStrategy": "...",
-                "userOps": "..."
-            },
-            "quantifiedMetrics": {
-                "productPositioning": { "updateFrequency": "...", "socialShare": "...", "appRating": "..." },
-                "userNeeds": { "updateFrequency": "...", "socialShare": "...", "appRating": "..." },
-                "featureComparison": { "updateFrequency": "...", "socialShare": "...", "appRating": "..." },
-                "uiUxDesign": { "updateFrequency": "...", "socialShare": "...", "appRating": "..." },
-                "copywritingStyle": { "updateFrequency": "...", "socialShare": "...", "appRating": "..." },
-                "visualStyle": { "updateFrequency": "...", "socialShare": "...", "appRating": "..." },
-                "revenueModel": { "updateFrequency": "...", "socialShare": "...", "appRating": "..." },
-                "marketingStrategy": { "updateFrequency": "...", "socialShare": "...", "appRating": "..." },
-                "userOps": { "updateFrequency": "...", "socialShare": "...", "appRating": "..." }
+            "aioBrandAwareness": {
+                "mentionVolume": { "value": "...", "analysis": "...", "source": "..." },
+                "generativeShareOfVoice": { "value": "...", "analysis": "...", "source": "..." },
+                "rankPositioning": { "value": "...", "analysis": "...", "source": "..." },
+                "sentimentOfMention": { "value": "...", "analysis": "...", "source": "..." },
+                "entityAssociationStrength": { "value": "...", "analysis": "...", "source": "..." },
+                "citationAccuracyTrust": { "value": "...", "analysis": "...", "source": "..." },
+                "recommendationIntensity": { "value": "...", "analysis": "...", "source": "..." }
             },
             "regionTag": "${region}"
         }
     ],
+    "rapidSentimentPulse": {
+        "overallSentimentNet": { "positive": 0-100, "negative": 0-100, "neutral": 0-100 },
+        "topicModeling": [
+            { "topic": "產品", "sentiment": "positive/negative/neutral", "percentage": 0-100 },
+            { "topic": "服務", "sentiment": "positive/negative/neutral", "percentage": 0-100 },
+            { "topic": "行銷", "sentiment": "positive/negative/neutral", "percentage": 0-100 }
+        ],
+        "sentimentTriggers": ["..."],
+        "spikeAlerts": [
+            { "type": "positive/negative", "description": "...", "timestamp": "..." }
+        ]
+    },
+    "marketEntryStrategy": {
+        "whiteSpaceOpportunities": ["..."],
+        "asymmetricAdvantages": ["..."],
+        "entryPathRecommendations": [
+            { "path": "D2C/通路/合作夥伴", "rationale": "...", "riskLevel": "low/medium/high" }
+        ],
+        "riskAssessment": {
+            "identifiedRisks": ["..."],
+            "mitigationStrategies": ["..."]
+        }
+    },
+    "qdacFramework": {
+        "question": "...",
+        "data": "...",
+        "analysis": "...",
+        "communication": "..."
+    },
+    "industryAnalysis": {
+        "industryStructure": "...",
+        "keyPlayers": ["..."],
+        "entryBarriers": ["..."],
+        "regulatoryEnvironment": "..."
+    },
+    "productClarification": {
+        "coreValueProposition": "...",
+        "keyFeatures": ["..."],
+        "targetUserGroups": ["..."],
+        "useCases": ["..."],
+        "competitiveDifferentiation": "..."
+    },
+    "languageRecommendations": {
+        "recommendedLanguages": ["..."],
+        "localizationKeywords": [
+            { "term": "...", "translation": "...", "context": "..." }
+        ],
+        "culturalSensitivity": ["..."],
+        "seoGeoKeywords": ["..."]
+    },
+    "localBusinessModelComparison": {
+        "localConsumptionHabits": "...",
+        "paymentPreferences": ["..."],
+        "channelStructure": "...",
+        "pricingStrategies": "...",
+        "promotionalHabits": ["..."],
+        "regulatoryCompliance": ["..."],
+        "competitorModelAdaptation": "...",
+        "ourModelAdvantages": ["..."],
+        "ourModelDisadvantages": ["..."]
+    },
     "socialBuzzTrend": {
         "labels": ["..."],
         "datasets": [
@@ -553,6 +736,14 @@ function renderResults(data) {
     renderSocialBuzzChart(data.socialBuzzTrend);
     renderComparisonTable(data.analysisResults);
     renderMetricComparisonChart(data.analysisResults);
+    renderAIOBrandAwareness(data.analysisResults);
+    renderRapidSentimentPulse(data.rapidSentimentPulse);
+    renderQDACFramework(data.qdacFramework);
+    renderMarketEntryStrategy(data.marketEntryStrategy);
+    renderIndustryAnalysis(data.industryAnalysis);
+    renderProductClarification(data.productClarification);
+    renderLanguageRecommendations(data.languageRecommendations);
+    renderLocalBusinessModelComparison(data.localBusinessModelComparison);
     renderTimeline(data.combinedTimeline);
     renderAlerts(data.alerts);
     summaryContainer.innerHTML = data.aiStrategicAnalysis.replace(/\n/g, '<br>');
@@ -661,39 +852,54 @@ function renderComparisonTable(results) {
         comparisonTable.innerHTML = '<tr><td class="p-4 text-gray-500">無法取得競品比較資料。</td></tr>';
         return;
     }
+    const tenDimensionMatrix = [
+        { key: 'productFeatureDensity', label: '產品特徵密度', group: '產品與創新' },
+        { key: 'pricePositioningElasticity', label: '價格定位彈性', group: '市場與定價' },
+        { key: 'digitalAuthorityFootprint', label: '數位權威與足跡', group: '數位影響力' },
+        { key: 'socialEngagementVelocity', label: '社群互動速率', group: '社群與互動' },
+        { key: 'customerSentimentPolarity', label: '客戶情緒極性', group: '客戶體驗' },
+        { key: 'distributionNetworkBreadth', label: '通路網絡廣度', group: '通路與分銷' },
+        { key: 'innovationCadence', label: '創新節奏', group: '產品與創新' },
+        { key: 'sustainabilityCSR', label: '永續與企業社會責任', group: '企業責任' },
+        { key: 'customerSupportResponsiveness', label: '客戶支援響應度', group: '客戶體驗' },
+        { key: 'brandNarrativeConsistency', label: '品牌敘事一致性', group: '品牌與行銷' },
+    ];
+    
     const analysisGroups = [
         {
-            title: '核心體驗',
-            description: '產品、價值與體驗',
+            title: '產品與創新',
+            description: '產品特徵、創新能力',
             bgClass: 'bg-indigo-50',
             textClass: 'text-indigo-700',
-            fields: [
-                { key: 'productPositioning', label: '產品定位' },
-                { key: 'userNeeds', label: '用戶需求 (痛點/偏好)' },
-                { key: 'featureComparison', label: '功能對比 (優劣/創新)' },
-                { key: 'uiUxDesign', label: '界面與體驗設計' },
-            ]
+            fields: tenDimensionMatrix.filter(f => f.group === '產品與創新')
         },
         {
-            title: '市場 / 行銷',
-            description: '定價、通路與行銷節奏',
+            title: '市場與定價',
+            description: '定價策略、通路佈局',
             bgClass: 'bg-amber-50',
             textClass: 'text-amber-700',
-            fields: [
-                { key: 'copywritingStyle', label: '行銷文案風格與語調' },
-                { key: 'visualStyle', label: '視覺設計與品牌感' },
-                { key: 'revenueModel', label: '盈利模式與定價帶' },
-                { key: 'marketingStrategy', label: '市場營銷與通路策略' },
-            ]
+            fields: tenDimensionMatrix.filter(f => f.group === '市場與定價')
         },
         {
-            title: '資源能力 / 策略彈性',
-            description: '用戶運營、組織與信任',
+            title: '數位影響力',
+            description: '數位權威、社群互動',
+            bgClass: 'bg-purple-50',
+            textClass: 'text-purple-700',
+            fields: tenDimensionMatrix.filter(f => f.group === '數位影響力')
+        },
+        {
+            title: '客戶體驗',
+            description: '情緒、支援響應',
+            bgClass: 'bg-green-50',
+            textClass: 'text-green-700',
+            fields: tenDimensionMatrix.filter(f => f.group === '客戶體驗')
+        },
+        {
+            title: '企業責任與品牌',
+            description: '永續、品牌一致性',
             bgClass: 'bg-emerald-50',
             textClass: 'text-emerald-700',
-            fields: [
-                { key: 'userOps', label: '用戶運營策略與資源' },
-            ]
+            fields: tenDimensionMatrix.filter(f => f.group === '企業責任' || f.group === '品牌與行銷')
         },
     ];
 const publicInfoSourcesData = [
@@ -806,12 +1012,27 @@ const metricColorPalette = ['#6366f1', '#ef4444', '#f59e0b', '#10b981'];
             const row = document.createElement('tr');
             row.innerHTML = `<td class="px-6 py-4 whitespace-nowrap font-bold text-gray-900 align-top">${item.label}</td>`;
             results.forEach(brand => {
-                const analysisText = (brand.analysis && brand.analysis[item.key]) ? brand.analysis[item.key] : 'N/A';
-                const sourceText = getSourceText(brand, item.key);
-                const metrics = getMetricsForKey(brand, item.key);
+                let analysisText = 'N/A';
+                let sourceText = null;
+                let metrics = null;
+                let score = null;
+                
+                if (brand.tenDimensionMatrix && brand.tenDimensionMatrix[item.key]) {
+                    const dimData = brand.tenDimensionMatrix[item.key];
+                    analysisText = dimData.analysis || 'N/A';
+                    sourceText = dimData.source || null;
+                    metrics = dimData.metrics || null;
+                    score = dimData.score !== undefined ? dimData.score : null;
+                } else if (brand.analysis && brand.analysis[item.key]) {
+                    analysisText = brand.analysis[item.key];
+                    sourceText = getSourceText(brand, item.key);
+                    metrics = getMetricsForKey(brand, item.key);
+                }
+                
                 const cell = document.createElement('td');
                 cell.className = 'px-6 py-4 whitespace-pre-wrap align-top';
                 cell.innerHTML = `
+                    ${score !== null ? `<div class="text-lg font-bold text-indigo-600 mb-2">${score}/10</div>` : ''}
                     <div>${analysisText}</div>
                     ${sourceText ? `<div class="text-xs text-gray-500 mt-2">來源：${sourceText}</div>` : ''}
                     ${metrics ? `<div class="text-xs text-indigo-600 mt-1">${formatMetricsText(metrics)}</div>` : ''}
@@ -834,11 +1055,28 @@ function renderMetricComparisonChart(results) {
         }
         return;
     }
+    
+    const tenDimensionLabels = [
+        '產品特徵密度', '價格定位彈性', '數位權威', '社群互動', '客戶情緒',
+        '通路網絡', '創新節奏', '永續CSR', '客戶支援', '品牌一致性'
+    ];
+    const tenDimensionKeys = [
+        'productFeatureDensity', 'pricePositioningElasticity', 'digitalAuthorityFootprint',
+        'socialEngagementVelocity', 'customerSentimentPolarity', 'distributionNetworkBreadth',
+        'innovationCadence', 'sustainabilityCSR', 'customerSupportResponsiveness', 'brandNarrativeConsistency'
+    ];
+    
     const datasets = results.map((brand, index) => {
         const color = metricColorPalette[index % metricColorPalette.length];
+        const data = tenDimensionKeys.map(key => {
+            if (brand.tenDimensionMatrix && brand.tenDimensionMatrix[key] && brand.tenDimensionMatrix[key].score !== undefined) {
+                return brand.tenDimensionMatrix[key].score;
+            }
+            return 0;
+        });
         return {
             label: `${brand.brandName}`,
-            data: metricChartKeys.map(key => aggregateMetricValue(brand, key)),
+            data: data,
             borderColor: color,
             backgroundColor: `${color}40`,
             pointBackgroundColor: color,
@@ -849,7 +1087,7 @@ function renderMetricComparisonChart(results) {
     const config = {
         type: 'radar',
         data: {
-            labels: metricChartLabels,
+            labels: tenDimensionLabels,
             datasets,
         },
         options: {
@@ -1240,6 +1478,429 @@ function formatCompetitorType(type) {
         potential: '潛在競品'
     };
     return labels[type] || type;
+}
+
+function renderAIOBrandAwareness(results) {
+    const container = document.getElementById('aio-awareness-container');
+    if (!container) return;
+    if (!results || !results.length) {
+        container.innerHTML = '<p class="text-gray-500">AIO 品牌感知資料尚未產生。</p>';
+        return;
+    }
+    
+    const aioDimensions = [
+        { key: 'mentionVolume', label: '提及聲量 (AI Signal Rate)', desc: 'AI生成回應中品牌出現頻率' },
+        { key: 'generativeShareOfVoice', label: '生成式佔有率 (G-SoV)', desc: '在所有競品提及中本品牌佔比' },
+        { key: 'rankPositioning', label: '排名與位序', desc: 'AI列表式回答中的順位' },
+        { key: 'sentimentOfMention', label: '提及情緒', desc: 'AI提及品牌時的形容詞與語境情緒' },
+        { key: 'entityAssociationStrength', label: '實體關聯強度', desc: '品牌與關鍵概念連結緊密度' },
+        { key: 'citationAccuracyTrust', label: '引用準確性與信任度', desc: 'AI生成資訊的正確性與可信度' },
+        { key: 'recommendationIntensity', label: '推薦強度', desc: '被動提及 vs 主動推薦的區分' },
+    ];
+    
+    container.innerHTML = results.map(brand => {
+        const aio = brand.aioBrandAwareness || {};
+        return `
+            <div class="border rounded-lg p-4 mb-4">
+                <h3 class="font-bold text-lg mb-3 ${getCompetitorTypeColor(brand.competitorType)}">${brand.brandName}</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    ${aioDimensions.map(dim => {
+                        const data = aio[dim.key] || {};
+                        return `
+                            <div class="bg-gray-50 p-3 rounded">
+                                <div class="font-semibold text-sm text-gray-700">${dim.label}</div>
+                                <div class="text-xs text-gray-500 mb-1">${dim.desc}</div>
+                                ${data.value ? `<div class="text-lg font-bold text-indigo-600">${data.value}</div>` : ''}
+                                ${data.analysis ? `<div class="text-sm text-gray-600 mt-2">${data.analysis}</div>` : ''}
+                                ${data.source ? `<div class="text-xs text-gray-400 mt-1">來源：${data.source}</div>` : ''}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderRapidSentimentPulse(sentimentData) {
+    const container = document.getElementById('sentiment-pulse-container');
+    if (!container) return;
+    if (!sentimentData) {
+        container.innerHTML = '<p class="text-gray-500">快速情緒脈動資料尚未產生。</p>';
+        return;
+    }
+    
+    const overall = sentimentData.overallSentimentNet || {};
+    const topics = sentimentData.topicModeling || [];
+    const triggers = sentimentData.sentimentTriggers || [];
+    const spikes = sentimentData.spikeAlerts || [];
+    
+    container.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-gradient-to-r from-green-50 to-red-50 p-4 rounded-lg">
+                <h3 class="font-bold mb-2">整體情緒淨值</h3>
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <span>正面</span>
+                        <span class="font-bold text-green-600">${overall.positive || 0}%</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>負面</span>
+                        <span class="font-bold text-red-600">${overall.negative || 0}%</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>中性</span>
+                        <span class="font-bold text-gray-600">${overall.neutral || 0}%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-blue-50 p-4 rounded-lg">
+                <h3 class="font-bold mb-2">主題建模分析</h3>
+                ${topics.length > 0 ? topics.map(topic => `
+                    <div class="mb-2">
+                        <div class="flex justify-between text-sm">
+                            <span>${topic.topic}</span>
+                            <span class="font-semibold ${topic.sentiment === 'positive' ? 'text-green-600' : topic.sentiment === 'negative' ? 'text-red-600' : 'text-gray-600'}">${topic.sentiment}</span>
+                        </div>
+                        <div class="text-xs text-gray-500">${topic.percentage}%</div>
+                    </div>
+                `).join('') : '<p class="text-sm text-gray-500">無主題資料</p>'}
+            </div>
+        </div>
+        ${triggers.length > 0 ? `
+            <div class="bg-yellow-50 p-4 rounded-lg mb-4">
+                <h3 class="font-bold mb-2">情緒觸發點</h3>
+                <ul class="list-disc list-inside space-y-1">
+                    ${triggers.map(trigger => `<li class="text-sm">${trigger}</li>`).join('')}
+                </ul>
+            </div>
+        ` : ''}
+        ${spikes.length > 0 ? `
+            <div class="bg-red-50 p-4 rounded-lg">
+                <h3 class="font-bold mb-2 text-red-700">⚠️ 異常波動檢測</h3>
+                ${spikes.map(spike => `
+                    <div class="border-l-4 border-red-500 pl-3 mb-2">
+                        <div class="font-semibold">${spike.type === 'negative' ? '負面' : '正面'}情緒尖峰</div>
+                        <div class="text-sm text-gray-600">${spike.description}</div>
+                        <div class="text-xs text-gray-400">${spike.timestamp || ''}</div>
+                    </div>
+                `).join('')}
+            </div>
+        ` : ''}
+    `;
+}
+
+function renderQDACFramework(qdacData) {
+    const container = document.getElementById('qdac-framework-container');
+    if (!container) return;
+    if (!qdacData) {
+        container.innerHTML = '<p class="text-gray-500">QDAC 決策框架資料尚未產生。</p>';
+        return;
+    }
+    
+    container.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-indigo-50 p-4 rounded-lg">
+                <h3 class="font-bold text-indigo-700 mb-2">Q - Question (問題)</h3>
+                <p class="text-sm">${qdacData.question || '尚未定義戰略問題'}</p>
+            </div>
+            <div class="bg-blue-50 p-4 rounded-lg">
+                <h3 class="font-bold text-blue-700 mb-2">D - Data (數據)</h3>
+                <p class="text-sm">${qdacData.data || '尚未選擇數據工具與指標'}</p>
+            </div>
+            <div class="bg-green-50 p-4 rounded-lg">
+                <h3 class="font-bold text-green-700 mb-2">A - Analysis (分析)</h3>
+                <p class="text-sm">${qdacData.analysis || '尚未進行數據模式分析'}</p>
+            </div>
+            <div class="bg-purple-50 p-4 rounded-lg">
+                <h3 class="font-bold text-purple-700 mb-2">C - Communication (溝通)</h3>
+                <p class="text-sm">${qdacData.communication || '尚未制定決策溝通方案'}</p>
+            </div>
+        </div>
+    `;
+}
+
+function renderMarketEntryStrategy(strategyData) {
+    const container = document.getElementById('market-entry-container');
+    if (!container) return;
+    if (!strategyData) {
+        container.innerHTML = '<p class="text-gray-500">市場進入策略資料尚未產生。</p>';
+        return;
+    }
+    
+    const opportunities = strategyData.whiteSpaceOpportunities || [];
+    const advantages = strategyData.asymmetricAdvantages || [];
+    const entryPaths = strategyData.entryPathRecommendations || [];
+    const risks = strategyData.riskAssessment || {};
+    
+    container.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-green-50 p-4 rounded-lg">
+                <h3 class="font-bold text-green-700 mb-2">市場機會識別 (白色空間)</h3>
+                ${opportunities.length > 0 ? `
+                    <ul class="list-disc list-inside space-y-1">
+                        ${opportunities.map(opp => `<li class="text-sm">${opp}</li>`).join('')}
+                    </ul>
+                ` : '<p class="text-sm text-gray-500">尚未識別到明顯機會</p>'}
+            </div>
+            <div class="bg-blue-50 p-4 rounded-lg">
+                <h3 class="font-bold text-blue-700 mb-2">不對稱優勢分析</h3>
+                ${advantages.length > 0 ? `
+                    <ul class="list-disc list-inside space-y-1">
+                        ${advantages.map(adv => `<li class="text-sm">${adv}</li>`).join('')}
+                    </ul>
+                ` : '<p class="text-sm text-gray-500">尚未識別到不對稱優勢</p>'}
+            </div>
+        </div>
+        <div class="bg-amber-50 p-4 rounded-lg mb-4">
+            <h3 class="font-bold text-amber-700 mb-2">進入路徑建議</h3>
+            ${entryPaths.length > 0 ? entryPaths.map(path => `
+                <div class="border-l-4 border-amber-500 pl-3 mb-3">
+                    <div class="font-semibold">${path.path}</div>
+                    <div class="text-sm text-gray-600 mt-1">${path.rationale || ''}</div>
+                    <div class="text-xs mt-1">
+                        <span class="px-2 py-1 rounded ${path.riskLevel === 'low' ? 'bg-green-100 text-green-700' : path.riskLevel === 'high' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}">
+                            風險等級：${path.riskLevel || 'medium'}
+                        </span>
+                    </div>
+                </div>
+            `).join('') : '<p class="text-sm text-gray-500">尚未提供進入路徑建議</p>'}
+        </div>
+        <div class="bg-red-50 p-4 rounded-lg">
+            <h3 class="font-bold text-red-700 mb-2">風險評估與緩解策略</h3>
+            ${risks.identifiedRisks && risks.identifiedRisks.length > 0 ? `
+                <div class="mb-3">
+                    <h4 class="font-semibold text-sm mb-1">識別風險</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        ${risks.identifiedRisks.map(risk => `<li class="text-sm">${risk}</li>`).join('')}
+                    </ul>
+                </div>
+            ` : ''}
+            ${risks.mitigationStrategies && risks.mitigationStrategies.length > 0 ? `
+                <div>
+                    <h4 class="font-semibold text-sm mb-1">緩解策略</h4>
+                    <ul class="list-disc list-inside space-y-1">
+                        ${risks.mitigationStrategies.map(strategy => `<li class="text-sm">${strategy}</li>`).join('')}
+                    </ul>
+                </div>
+            ` : '<p class="text-sm text-gray-500">尚未提供緩解策略</p>'}
+        </div>
+    `;
+}
+
+function renderIndustryAnalysis(industryData) {
+    const container = document.getElementById('industry-analysis-container');
+    if (!container) return;
+    if (!industryData) {
+        container.innerHTML = '<p class="text-gray-500">行業分析資料尚未產生。</p>';
+        return;
+    }
+    
+    container.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-blue-50 p-4 rounded-lg">
+                <h3 class="font-bold text-blue-700 mb-2">行業結構</h3>
+                <p class="text-sm text-gray-700">${industryData.industryStructure || '尚未分析'}</p>
+            </div>
+            <div class="bg-green-50 p-4 rounded-lg">
+                <h3 class="font-bold text-green-700 mb-2">主要玩家</h3>
+                ${industryData.keyPlayers && industryData.keyPlayers.length > 0 ? `
+                    <ul class="list-disc list-inside space-y-1">
+                        ${industryData.keyPlayers.map(player => `<li class="text-sm">${player}</li>`).join('')}
+                    </ul>
+                ` : '<p class="text-sm text-gray-500">尚未識別</p>'}
+            </div>
+            <div class="bg-yellow-50 p-4 rounded-lg">
+                <h3 class="font-bold text-yellow-700 mb-2">進入門檻</h3>
+                ${industryData.entryBarriers && industryData.entryBarriers.length > 0 ? `
+                    <ul class="list-disc list-inside space-y-1">
+                        ${industryData.entryBarriers.map(barrier => `<li class="text-sm">${barrier}</li>`).join('')}
+                    </ul>
+                ` : '<p class="text-sm text-gray-500">尚未分析</p>'}
+            </div>
+            <div class="bg-purple-50 p-4 rounded-lg">
+                <h3 class="font-bold text-purple-700 mb-2">監管環境</h3>
+                <p class="text-sm text-gray-700">${industryData.regulatoryEnvironment || '尚未分析'}</p>
+            </div>
+        </div>
+    `;
+}
+
+function renderProductClarification(productData) {
+    const container = document.getElementById('product-clarification-container');
+    if (!container) return;
+    if (!productData) {
+        container.innerHTML = '<p class="text-gray-500">產品明確化資料尚未產生。</p>';
+        return;
+    }
+    
+    container.innerHTML = `
+        <div class="space-y-4">
+            <div class="bg-indigo-50 p-4 rounded-lg">
+                <h3 class="font-bold text-indigo-700 mb-2">核心價值主張</h3>
+                <p class="text-sm text-gray-700">${productData.coreValueProposition || '尚未明確'}</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-green-700 mb-2">關鍵功能特色</h3>
+                    ${productData.keyFeatures && productData.keyFeatures.length > 0 ? `
+                        <ul class="list-disc list-inside space-y-1">
+                            ${productData.keyFeatures.map(feature => `<li class="text-sm">${feature}</li>`).join('')}
+                        </ul>
+                    ` : '<p class="text-sm text-gray-500">尚未列出</p>'}
+                </div>
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-blue-700 mb-2">目標用戶群體</h3>
+                    ${productData.targetUserGroups && productData.targetUserGroups.length > 0 ? `
+                        <ul class="list-disc list-inside space-y-1">
+                            ${productData.targetUserGroups.map(group => `<li class="text-sm">${group}</li>`).join('')}
+                        </ul>
+                    ` : '<p class="text-sm text-gray-500">尚未定義</p>'}
+                </div>
+            </div>
+            <div class="bg-yellow-50 p-4 rounded-lg">
+                <h3 class="font-bold text-yellow-700 mb-2">使用場景</h3>
+                ${productData.useCases && productData.useCases.length > 0 ? `
+                    <ul class="list-disc list-inside space-y-1">
+                        ${productData.useCases.map(useCase => `<li class="text-sm">${useCase}</li>`).join('')}
+                    </ul>
+                ` : '<p class="text-sm text-gray-500">尚未描述</p>'}
+            </div>
+            <div class="bg-purple-50 p-4 rounded-lg">
+                <h3 class="font-bold text-purple-700 mb-2">競爭差異化</h3>
+                <p class="text-sm text-gray-700">${productData.competitiveDifferentiation || '尚未分析'}</p>
+            </div>
+        </div>
+    `;
+}
+
+function renderLanguageRecommendations(langData) {
+    const container = document.getElementById('language-recommendations-container');
+    if (!container) return;
+    if (!langData) {
+        container.innerHTML = '<p class="text-gray-500">語言建議資料尚未產生。</p>';
+        return;
+    }
+    
+    container.innerHTML = `
+        <div class="space-y-4">
+            <div class="bg-indigo-50 p-4 rounded-lg">
+                <h3 class="font-bold text-indigo-700 mb-2">建議語言版本</h3>
+                ${langData.recommendedLanguages && langData.recommendedLanguages.length > 0 ? `
+                    <div class="flex flex-wrap gap-2">
+                        ${langData.recommendedLanguages.map(lang => `
+                            <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">${lang}</span>
+                        `).join('')}
+                    </div>
+                ` : '<p class="text-sm text-gray-500">尚未建議</p>'}
+            </div>
+            <div class="bg-green-50 p-4 rounded-lg">
+                <h3 class="font-bold text-green-700 mb-2">本地化關鍵詞與術語</h3>
+                ${langData.localizationKeywords && langData.localizationKeywords.length > 0 ? `
+                    <div class="space-y-2">
+                        ${langData.localizationKeywords.map(kw => `
+                            <div class="bg-white p-2 rounded">
+                                <div class="font-semibold text-sm">${kw.term || ''} → ${kw.translation || ''}</div>
+                                <div class="text-xs text-gray-500">${kw.context || ''}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : '<p class="text-sm text-gray-500">尚未提供</p>'}
+            </div>
+            <div class="bg-blue-50 p-4 rounded-lg">
+                <h3 class="font-bold text-blue-700 mb-2">文化敏感度考量</h3>
+                ${langData.culturalSensitivity && langData.culturalSensitivity.length > 0 ? `
+                    <ul class="list-disc list-inside space-y-1">
+                        ${langData.culturalSensitivity.map(item => `<li class="text-sm">${item}</li>`).join('')}
+                    </ul>
+                ` : '<p class="text-sm text-gray-500">尚未分析</p>'}
+            </div>
+            <div class="bg-yellow-50 p-4 rounded-lg">
+                <h3 class="font-bold text-yellow-700 mb-2">SEO/GEO 關鍵詞策略</h3>
+                ${langData.seoGeoKeywords && langData.seoGeoKeywords.length > 0 ? `
+                    <div class="flex flex-wrap gap-2">
+                        ${langData.seoGeoKeywords.map(keyword => `
+                            <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm">${keyword}</span>
+                        `).join('')}
+                    </div>
+                ` : '<p class="text-sm text-gray-500">尚未建議</p>'}
+            </div>
+        </div>
+    `;
+}
+
+function renderLocalBusinessModelComparison(businessModelData) {
+    const container = document.getElementById('local-business-model-container');
+    if (!container) return;
+    if (!businessModelData) {
+        container.innerHTML = '<p class="text-gray-500">當地市場商業模式比對資料尚未產生。</p>';
+        return;
+    }
+    
+    container.innerHTML = `
+        <div class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-blue-700 mb-2">當地消費習慣</h3>
+                    <p class="text-sm text-gray-700">${businessModelData.localConsumptionHabits || '尚未分析'}</p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-green-700 mb-2">支付偏好</h3>
+                    ${businessModelData.paymentPreferences && businessModelData.paymentPreferences.length > 0 ? `
+                        <ul class="list-disc list-inside space-y-1">
+                            ${businessModelData.paymentPreferences.map(pref => `<li class="text-sm">${pref}</li>`).join('')}
+                        </ul>
+                    ` : '<p class="text-sm text-gray-500">尚未分析</p>'}
+                </div>
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-purple-700 mb-2">通路結構</h3>
+                    <p class="text-sm text-gray-700">${businessModelData.channelStructure || '尚未分析'}</p>
+                </div>
+                <div class="bg-yellow-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-yellow-700 mb-2">定價策略</h3>
+                    <p class="text-sm text-gray-700">${businessModelData.pricingStrategies || '尚未分析'}</p>
+                </div>
+            </div>
+            <div class="bg-indigo-50 p-4 rounded-lg">
+                <h3 class="font-bold text-indigo-700 mb-2">促銷習慣</h3>
+                ${businessModelData.promotionalHabits && businessModelData.promotionalHabits.length > 0 ? `
+                    <ul class="list-disc list-inside space-y-1">
+                        ${businessModelData.promotionalHabits.map(habit => `<li class="text-sm">${habit}</li>`).join('')}
+                    </ul>
+                ` : '<p class="text-sm text-gray-500">尚未分析</p>'}
+            </div>
+            <div class="bg-red-50 p-4 rounded-lg">
+                <h3 class="font-bold text-red-700 mb-2">法規與合規要求</h3>
+                ${businessModelData.regulatoryCompliance && businessModelData.regulatoryCompliance.length > 0 ? `
+                    <ul class="list-disc list-inside space-y-1">
+                        ${businessModelData.regulatoryCompliance.map(reg => `<li class="text-sm">${reg}</li>`).join('')}
+                    </ul>
+                ` : '<p class="text-sm text-gray-500">尚未列出</p>'}
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-bold text-gray-700 mb-2">競品商業模式適應性</h3>
+                <p class="text-sm text-gray-700">${businessModelData.competitorModelAdaptation || '尚未分析'}</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+                    <h3 class="font-bold text-green-700 mb-2">我方模式優勢</h3>
+                    ${businessModelData.ourModelAdvantages && businessModelData.ourModelAdvantages.length > 0 ? `
+                        <ul class="list-disc list-inside space-y-1">
+                            ${businessModelData.ourModelAdvantages.map(adv => `<li class="text-sm">${adv}</li>`).join('')}
+                        </ul>
+                    ` : '<p class="text-sm text-gray-500">尚未識別</p>'}
+                </div>
+                <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500">
+                    <h3 class="font-bold text-red-700 mb-2">我方模式劣勢</h3>
+                    ${businessModelData.ourModelDisadvantages && businessModelData.ourModelDisadvantages.length > 0 ? `
+                        <ul class="list-disc list-inside space-y-1">
+                            ${businessModelData.ourModelDisadvantages.map(dis => `<li class="text-sm">${dis}</li>`).join('')}
+                        </ul>
+                    ` : '<p class="text-sm text-gray-500">尚未識別</p>'}
+                </div>
+            </div>
+        </div>
+    `;
 }
 
 function showError(message) {
