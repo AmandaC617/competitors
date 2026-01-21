@@ -172,6 +172,10 @@
                     </div>
                 </div>
                 <div class="bg-white rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 p-6">維度說明</h2>
+                    <div id="dimension-guide" class="p-6 grid gap-4 sm:grid-cols-2"></div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg">
                     <h2 class="text-2xl font-bold text-gray-800 p-6">整合行銷活動時間軸</h2>
                     <div id="timeline-container" class="relative border-l-2 border-gray-200 ml-8 p-6 pt-0"></div>
                 </div>
@@ -737,6 +741,35 @@ const sourceValidationLinks = [
         tooltip: '好用於補强「品牌聲譽」「負面聲量」與策略脈絡。'
     }
 ];
+const dimensionGuideData = [
+    {
+        title: '核心體驗',
+        description: '觀察產品定位、功能、體驗與價值主張的差異',
+        items: [
+            { label: '產品定位', definition: '品牌主張與價值訴求', sources: '品牌說明、AI 分析', radar: '更新頻率' },
+            { label: '用戶需求', definition: '痛點/偏好與產品匹配度', sources: 'Persona、社群/報導', radar: '社群聲量' },
+            { label: '功能對比', definition: '功能完整度與創新程度', sources: '官網/產品頁', radar: 'App 評分' },
+            { label: 'UI/UX', definition: '界面流暢度與互動品質', sources: 'App 評分、使用者口碑', radar: 'App 評分' },
+        ]
+    },
+    {
+        title: '市場 / 行銷',
+        description: '比對文案、視覺、定價與通路策略',
+        items: [
+            { label: '文案風格', definition: '行銷語調與用詞定位', sources: '社群/廣告', radar: '社群聲量' },
+            { label: '視覺品牌感', definition: '視覺一致性與認知度', sources: '官網/廣告素材', radar: '社群聲量' },
+            { label: '盈利定價', definition: '收費模式與套餐策略', sources: '公開定價、報價單', radar: '更新頻率' },
+            { label: '行銷通路', definition: '投放渠道與合作網絡', sources: '媒體報導、代理公告', radar: '社群聲量' },
+        ]
+    },
+    {
+        title: '資源能力 / 策略彈性',
+        description: '品牌聲譽、資源與營運彈性的觀察',
+        items: [
+            { label: '營運策略', definition: '運營/客服節奏與資源佈局', sources: 'AI 分析、內部觀察', radar: '更新頻率' },
+        ]
+    }
+];
 const metricChartLabels = ['更新頻率', '社群聲量', 'App 評分'];
 const metricChartKeys = ['updateFrequency', 'socialShare', 'appRating'];
 const metricColorPalette = ['#6366f1', '#ef4444', '#f59e0b', '#10b981'];
@@ -876,6 +909,7 @@ function renderComparisonSources() {
     `).join('');
     container.classList.remove('hidden');
     renderPublicInfoSources();
+    renderDimensionGuide();
 }
 
 function renderPublicInfoSources() {
@@ -898,6 +932,26 @@ function renderPublicInfoSources() {
         </div>
     `).join('');
     container.classList.remove('hidden');
+}
+
+function renderDimensionGuide() {
+    const container = document.getElementById('dimension-guide');
+    if (!container) return;
+    container.innerHTML = dimensionGuideData.map(group => `
+        <div class="rounded-2xl border border-gray-200 p-4 bg-gray-50">
+            <p class="text-xs font-semibold uppercase text-gray-500">${group.title}</p>
+            <p class="text-sm font-semibold text-gray-800 mt-1">${group.description}</p>
+            <ul class="mt-3 text-xs space-y-2 text-gray-600">
+                ${group.items.map(item => `
+                    <li>
+                        <p class="font-semibold text-gray-800">${item.label}</p>
+                        <p>${item.definition}</p>
+                        <p class="text-gray-500">來源：${item.sources} · Radar：${item.radar}</p>
+                    </li>
+                `).join('')}
+            </ul>
+        </div>
+    `).join('');
 }
 
 function renderSourceValidationLinks() {
